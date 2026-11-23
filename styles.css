@@ -338,13 +338,6 @@ body {
   box-shadow: 0 0 6px rgba(239, 68, 68, 0.65);
 }
 
-.privacy-tag {
-  font-size: 0.74rem;
-  font-weight: 600;
-  color: var(--ink-subtle);
-  letter-spacing: 0.01em;
-}
-
 .site-title {
   margin: 0;
   font-size: clamp(1.5rem, 2.8vw, 2.05rem);

@@ -22,7 +22,7 @@
       } catch (e) {}
     })();
   </script>
-  <link rel="stylesheet" href="./styles.css?v=2">
+  <link rel="stylesheet" href="./styles.css?v=3">
 </head>
 <body>
   <div class="chassis">
@@ -39,7 +39,6 @@
               <span class="sync-dot" aria-hidden="true"></span>
               <span id="sync-text">Syncing feed…</span>
             </span>
-            <span class="privacy-tag">Public Board · Due Dates Only</span>
           </div>
           <h1 class="site-title">Course Deadlines</h1>
         </div>
@@ -57,17 +56,6 @@
           <span class="btn-led" aria-hidden="true"></span>
           <span class="btn-label">Past Due (5d)</span>
           <span class="btn-count" id="past-due-btn-count">0</span>
-        </button>
-
-        <button
-          type="button"
-          class="squishy-btn toolbar-btn"
-          id="btn-timezone"
-          aria-pressed="false"
-          title="Switch between AST (UTC+3) and your browser timezone"
-        >
-          <span class="btn-icon" aria-hidden="true">🕒</span>
-          <span class="btn-label" id="tz-label">AST (UTC+3)</span>
         </button>
 
         <button
@@ -233,6 +221,6 @@
   <!-- Subtle live toast notification -->
   <div class="toast-keycap" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="./app.js" defer></script>
+  <script src="./app.js?v=2" defer></script>
 </body>
 </html>

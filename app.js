@@ -13,7 +13,6 @@
     generatedAt: null,
     selectedCourse: null, // null = All Courses
     showPastDue: true,
-    useLocalTz: false,
     sfxEnabled: false,
     searchQuery: '',
     expandedId: null,
@@ -26,8 +25,6 @@
     syncText: document.getElementById('sync-text'),
     btnPastDue: document.getElementById('btn-past-due'),
     pastDueBtnCount: document.getElementById('past-due-btn-count'),
-    btnTimezone: document.getElementById('btn-timezone'),
-    tzLabel: document.getElementById('tz-label'),
     btnSfx: document.getElementById('btn-sfx'),
     btnTheme: document.getElementById('btn-theme'),
     themeIcon: document.getElementById('theme-icon'),
@@ -114,7 +111,7 @@
   }
 
   /* ------------------------------------------------------------------------
-     Preferences Persistence (Theme, Timezone, SFX)
+     Preferences Persistence (Theme, SFX)
      ------------------------------------------------------------------------ */
   function applyTheme(theme) {
     const resolved = theme === 'dark' ? 'dark' : 'light';
@@ -132,21 +129,6 @@
     } catch (e) {}
   }
 
-  function applyTimezonePref(useLocal) {
-    state.useLocalTz = Boolean(useLocal);
-    els.btnTimezone.classList.toggle('is-active', state.useLocalTz);
-    els.btnTimezone.setAttribute('aria-pressed', String(state.useLocalTz));
-    if (state.useLocalTz) {
-      const localZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local';
-      els.tzLabel.textContent = localZone.split('/').pop().replace(/_/g, ' ');
-    } else {
-      els.tzLabel.textContent = 'AST (UTC+3)';
-    }
-    try {
-      localStorage.setItem('lms_deadlines_tz', state.useLocalTz ? 'local' : 'ast');
-    } catch (e) {}
-  }
-
   function applySfxPref(enabled) {
     state.sfxEnabled = Boolean(enabled);
     els.btnSfx.classList.toggle('is-active', state.sfxEnabled);
@@ -158,47 +140,34 @@
 
   function loadPreferences() {
     let savedTheme = 'light';
-    let savedTz = 'ast';
     let savedSfx = '0';
     try {
       savedTheme = localStorage.getItem('lms_deadlines_theme') || 'light';
-      savedTz = localStorage.getItem('lms_deadlines_tz') || 'ast';
       savedSfx = localStorage.getItem('lms_deadlines_sfx') || '0';
     } catch (e) {}
     applyTheme(savedTheme);
-    applyTimezonePref(savedTz === 'local');
     applySfxPref(savedSfx === '1');
   }
 
   /* ------------------------------------------------------------------------
      Date & Countdown Formatting
      ------------------------------------------------------------------------ */
-  function activeTimeZone() {
-    return state.useLocalTz ? undefined : AST_TIMEZONE;
-  }
-
   function formatDueTimestamp(ms) {
     const dt = new Date(ms);
-    const tz = activeTimeZone();
     const dateFmt = new Intl.DateTimeFormat('en-US', {
-      timeZone: tz,
+      timeZone: AST_TIMEZONE,
       weekday: 'short',
       month: 'short',
       day: 'numeric',
       year: 'numeric',
     });
     const timeFmt = new Intl.DateTimeFormat('en-US', {
-      timeZone: tz,
+      timeZone: AST_TIMEZONE,
       hour: '2-digit',
       minute: '2-digit',
       hour12: true,
     });
-    const tzLabel = state.useLocalTz
-      ? (new Intl.DateTimeFormat('en-US', { timeZoneName: 'short' })
-          .formatToParts(dt)
-          .find((p) => p.type === 'timeZoneName')?.value || 'Local')
-      : 'AST';
-    return `${dateFmt.format(dt)} · ${timeFmt.format(dt)} ${tzLabel}`;
+    return `${dateFmt.format(dt)} · ${timeFmt.format(dt)} AST`;
   }
 
   function formatRelativeSync(isoStr) {
@@ -669,12 +638,6 @@
       state.showPastDue = !state.showPastDue;
       els.btnPastDue.classList.toggle('is-active', state.showPastDue);
       els.btnPastDue.setAttribute('aria-pressed', String(state.showPastDue));
-      renderAll();
-    });
-
-    els.btnTimezone.addEventListener('click', () => {
-      playKeySound('down');
-      applyTimezonePref(!state.useLocalTz);
       renderAll();
     });
 

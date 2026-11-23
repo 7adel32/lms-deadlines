@@ -984,6 +984,7 @@ html[data-theme="dark"] .urgency-soon {
 
 /* Recessed LCD Due Readout */
 .card-lcd {
+  margin-top: auto;
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -1009,6 +1010,7 @@ html[data-theme="dark"] .urgency-soon {
   font-weight: 700;
   color: var(--lcd-ink);
   letter-spacing: -0.02em;
+  white-space: nowrap;
 }
 
 .lcd-retention {

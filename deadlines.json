@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-23T06:32:18Z",
+  "past_due_retention_days": 5,
+  "courses": [
+    {
+      "slug": "601-csc",
+      "code": "601 CSC",
+      "short_name": "أساسيات الذكاء الاصطناعي",
+      "section": "231",
+      "full_name": "أساسيات الذكاء الاصطناعي 601 CSC_شعبة(231)نظري",
+      "doctor": "د. عماد الحربي",
+      "accent_index": 0
+    },
+    {
+      "slug": "602-csc",
+      "code": "602 CSC",
+      "short_name": "الرياضيات الحاسوبية",
+      "section": "227",
+      "full_name": "الرياضيات الحاسوبية 602 CSC_شعبة(227)نظري",
+      "doctor": "د. محمد زيشان عالم",
+      "accent_index": 1
+    },
+    {
+      "slug": "605-csc",
+      "code": "605 CSC",
+      "short_name": "البرمجة المتقدمة وإطارات برمجة",
+      "section": "228",
+      "full_name": "البرمجة المتقدمة وإطارات برمجة 605 CSC_شعبة(228)نظري",
+      "doctor": "د. أحمد مباركي",
+      "accent_index": 2
+    },
+    {
+      "slug": "608-csc",
+      "code": "608 CSC",
+      "short_name": "طرق بحث",
+      "section": "229",
+      "full_name": "طرق بحث 608 CSC_شعبة(229)نظري",
+      "doctor": "د. محمد الوكيل",
+      "accent_index": 3
+    }
+  ],
+  "deadlines": [
+    {
+      "id": "36a8fa2a58c4",
+      "title": "Exercie 2",
+      "course_slug": "605-csc",
+      "course_code": "605 CSC",
+      "course_short_name": "البرمجة المتقدمة وإطارات برمجة",
+      "course_full_name": "البرمجة المتقدمة وإطارات برمجة 605 CSC_شعبة(228)نظري",
+      "doctor": "د. أحمد مباركي",
+      "due_iso": "2026-11-19T20:59:00Z",
+      "accent_index": 2
+    },
+    {
+      "id": "fe166a55e312",
+      "title": "Project",
+      "course_slug": "605-csc",
+      "course_code": "605 CSC",
+      "course_short_name": "البرمجة المتقدمة وإطارات برمجة",
+      "course_full_name": "البرمجة المتقدمة وإطارات برمجة 605 CSC_شعبة(228)نظري",
+      "doctor": "د. أحمد مباركي",
+      "due_iso": "2026-11-22T20:59:00Z",
+      "accent_index": 2
+    },
+    {
+      "id": "7526872552cd",
+      "title": "Paper 4 (30 Points)",
+      "course_slug": "608-csc",
+      "course_code": "608 CSC",
+      "course_short_name": "طرق بحث",
+      "course_full_name": "طرق بحث 608 CSC_شعبة(229)نظري",
+      "doctor": "د. محمد الوكيل",
+      "due_iso": "2026-11-25T16:24:00Z",
+      "accent_index": 3
+    },
+    {
+      "id": "20e06a35b63b",
+      "title": "Presentation and participation (10 Points)",
+      "course_slug": "608-csc",
+      "course_code": "608 CSC",
+      "course_short_name": "طرق بحث",
+      "course_full_name": "طرق بحث 608 CSC_شعبة(229)نظري",
+      "doctor": "د. محمد الوكيل",
+      "due_iso": "2026-11-25T16:34:00Z",
+      "accent_index": 3
+    },
+    {
+      "id": "bb3257a2578b",
+      "title": "Project 2",
+      "course_slug": "601-csc",
+      "course_code": "601 CSC",
+      "course_short_name": "أساسيات الذكاء الاصطناعي",
+      "course_full_name": "أساسيات الذكاء الاصطناعي 601 CSC_شعبة(231)نظري",
+      "doctor": "د. عماد الحربي",
+      "due_iso": "2026-11-27T20:59:00Z",
+      "accent_index": 0
+    }
+  ]
+}

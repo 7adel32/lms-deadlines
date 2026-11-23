@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Live public course deadlines board synced from Hermes LMS. Shows upcoming and 5-day past-due tasks with zero submission status exposure.">
+  <meta name="theme-color" content="#ece9e4">
+  <title>LMS Deadlines — Course Schedule Board</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('lms_deadlines_theme');
+        if (saved === 'dark' || saved === 'light') {
+          document.documentElement.setAttribute('data-theme', saved);
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute('content', saved === 'dark' ? '#1b1a18' : '#ece9e4');
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="chassis">
+    <!-- Instrument Header -->
+    <header class="header-deck">
+      <div class="brand-cluster">
+        <div class="brand-badge squishy-badge" aria-hidden="true">
+          <span class="badge-led"></span>
+          <span class="badge-mono">LMS</span>
+        </div>
+        <div class="brand-copy">
+          <div class="eyebrow-row">
+            <span class="sync-pill" id="sync-status">
+              <span class="sync-dot" aria-hidden="true"></span>
+              <span id="sync-text">Syncing feed…</span>
+            </span>
+            <span class="privacy-tag">Public Board · Due Dates Only</span>
+          </div>
+          <h1 class="site-title">Course Deadlines</h1>
+        </div>
+      </div>
+
+      <!-- Tactile Utility Toolbar -->
+      <div class="toolbar-rack" role="toolbar" aria-label="Board controls">
+        <button
+          type="button"
+          class="squishy-btn toolbar-btn is-active"
+          id="btn-past-due"
+          aria-pressed="true"
+          title="Toggle past-due items kept for 5 days"
+        >
+          <span class="btn-led" aria-hidden="true"></span>
+          <span class="btn-label">Past Due (5d)</span>
+          <span class="btn-count" id="past-due-btn-count">0</span>
+        </button>
+
+        <button
+          type="button"
+          class="squishy-btn toolbar-btn"
+          id="btn-timezone"
+          aria-pressed="false"
+          title="Switch between AST (UTC+3) and your browser timezone"
+        >
+          <span class="btn-icon" aria-hidden="true">🕒</span>
+          <span class="btn-label" id="tz-label">AST (UTC+3)</span>
+        </button>
+
+        <button
+          type="button"
+          class="squishy-btn toolbar-btn"
+          id="btn-sfx"
+          aria-pressed="false"
+          title="Toggle synthesized mechanical keycap click sound"
+        >
+          <span class="btn-led btn-led-sfx" aria-hidden="true"></span>
+          <span class="btn-label">Click SFX</span>
+        </button>
+
+        <button
+          type="button"
+          class="squishy-btn toolbar-btn"
+          id="btn-theme"
+          aria-pressed="false"
+          title="Switch between Warm Stone and Charcoal PBT keycaps"
+        >
+          <span class="btn-icon" id="theme-icon" aria-hidden="true">◐</span>
+          <span class="btn-label" id="theme-label">Dark PBT</span>
+        </button>
+
+        <button
+          type="button"
+          class="squishy-btn toolbar-btn btn-accent-action"
+          id="btn-export-all"
+          title="Download .ics calendar file for currently filtered upcoming deadlines"
+        >
+          <span class="btn-icon" aria-hidden="true">📅</span>
+          <span class="btn-label">Export .ics</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Telemetry Counter Strip + Search Well -->
+    <section class="instrument-bay" aria-label="Deadline summary and search">
+      <div class="telemetry-strip">
+        <div class="telemetry-module">
+          <span class="telemetry-label">UPCOMING</span>
+          <div class="lcd-well">
+            <span class="lcd-value" id="stat-upcoming">0</span>
+            <span class="lcd-sub">active</span>
+          </div>
+        </div>
+        <div class="telemetry-module">
+          <span class="telemetry-label">DUE ≤ 48H</span>
+          <div class="lcd-well lcd-well-warn">
+            <span class="lcd-value" id="stat-soon">0</span>
+            <span class="lcd-sub">priority</span>
+          </div>
+        </div>
+        <div class="telemetry-module">
+          <span class="telemetry-label">PAST DUE ≤ 5D</span>
+          <div class="lcd-well lcd-well-muted">
+            <span class="lcd-value" id="stat-past">0</span>
+            <span class="lcd-sub">retained</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="search-tray">
+        <label class="sr-only" for="search-input">Filter deadlines by title, course, or instructor</label>
+        <div class="search-well">
+          <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+          <input
+            id="search-input"
+            class="search-input"
+            type="search"
+            placeholder="Filter by task, course code, or instructor…"
+            autocomplete="off"
+            spellcheck="false"
+          >
+          <button
+            type="button"
+            class="squishy-btn mini-clear-btn is-hidden"
+            id="btn-clear-search"
+            aria-label="Clear search"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Course Filter Keycap Rack -->
+    <section class="filter-deck" aria-label="Course filters">
+      <div class="section-cap-bar">
+        <span class="section-label">COURSE FILTER CHIPS</span>
+        <span class="section-hint" id="filter-hint">Press any keycap to isolate a course</span>
+      </div>
+      <div class="course-rack" id="course-rack" role="group" aria-label="Filter deadlines by course">
+        <!-- Populated dynamically by app.js -->
+      </div>
+    </section>
+
+    <!-- Main Deadlines Feed -->
+    <main class="board-main" id="board-main">
+      <!-- Loading skeleton -->
+      <div class="skeleton-grid" id="loading-state" aria-live="polite">
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+      </div>
+
+      <!-- Error state -->
+      <div class="empty-well is-hidden" id="error-state" role="alert">
+        <div class="empty-title">Could not load deadlines feed</div>
+        <p class="empty-desc" id="error-message">Please retry in a moment.</p>
+        <button type="button" class="squishy-btn" id="btn-retry">Retry Feed</button>
+      </div>
+
+      <!-- Upcoming Deadlines Section -->
+      <section class="feed-section is-hidden" id="upcoming-section" aria-labelledby="upcoming-heading">
+        <div class="feed-header">
+          <h2 class="feed-heading" id="upcoming-heading">
+            <span class="heading-led heading-led-live" aria-hidden="true"></span>
+            Upcoming Deadlines
+          </h2>
+          <span class="feed-badge" id="upcoming-count-badge">0 items</span>
+        </div>
+        <div class="cards-grid" id="upcoming-grid"></div>
+      </section>
+
+      <!-- Past-Due (<= 5 Days) Section -->
+      <section class="feed-section is-hidden" id="past-section" aria-labelledby="past-heading">
+        <div class="feed-header">
+          <h2 class="feed-heading" id="past-heading">
+            <span class="heading-led heading-led-past" aria-hidden="true"></span>
+            Recently Past Due
+            <span class="retention-pill">Kept 5 Days</span>
+          </h2>
+          <span class="feed-badge" id="past-count-badge">0 items</span>
+        </div>
+        <div class="cards-grid cards-grid-past" id="past-grid"></div>
+      </section>
+
+      <!-- Empty Filter Result State -->
+      <div class="empty-well is-hidden" id="empty-state">
+        <div class="empty-title">No matching deadlines</div>
+        <p class="empty-desc" id="empty-desc">All upcoming and 5-day past-due items are clear for this selection.</p>
+        <button type="button" class="squishy-btn is-hidden" id="btn-reset-filters">Reset Filters</button>
+      </div>
+    </main>
+
+    <!-- Tactile Footer -->
+    <footer class="chassis-footer">
+      <div class="footer-left">
+        <span>Auto-synced via Hermes LMS Sentinel</span>
+        <span class="sep" aria-hidden="true">·</span>
+        <span>Zero submission status or grade data published</span>
+      </div>
+      <div class="footer-right" id="footer-sync-meta">
+        Retention window: 5 days past due
+      </div>
+    </footer>
+  </div>
+
+  <!-- Subtle live toast notification -->
+  <div class="toast-keycap" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>

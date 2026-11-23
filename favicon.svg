@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="16" fill="#ece9e4"/>
+  <!-- 3D extruded keycap skirt -->
+  <rect x="8" y="14" width="48" height="44" rx="11" fill="#cacaca"/>
+  <rect x="8" y="11" width="48" height="43" rx="11" fill="#dcdcdc"/>
+  <!-- Keycap top face -->
+  <rect x="8" y="8" width="48" height="42" rx="11" fill="#f3f1ed"/>
+  <rect x="8.75" y="8.75" width="46.5" height="40.5" rx="10.25" stroke="#ffffff" stroke-width="1.5"/>
+  <!-- Recessed mini LCD calendar strip -->
+  <rect x="16" y="21" width="32" height="20" rx="5" fill="#e2ded8"/>
+  <rect x="16.5" y="21.5" width="31" height="19" rx="4.5" stroke="#d0cbc2" stroke-width="1"/>
+  <rect x="21" y="27" width="14" height="3" rx="1.5" fill="#242424"/>
+  <rect x="21" y="33" width="22" height="3" rx="1.5" fill="#6b6760"/>
+  <!-- Anodized status LED -->
+  <circle cx="44" cy="15.5" r="3.5" fill="#ea580c"/>
+  <circle cx="43" cy="14.5" r="1.1" fill="#fed7aa"/>
+</svg>

@@ -1,0 +1,1232 @@
+/* ==========================================================================
+   LMS Deadlines — Tactile "Squishy" Hardware Keycap Theme
+   Inspired by CodePen https://codepen.io/havardob/pen/qBvYdXL
+   ========================================================================== */
+
+:root {
+  /* Warm Stone Light Keycaps (Default) */
+  --canvas-bg: #ece9e4;
+  --canvas-dot: rgba(45, 40, 34, 0.065);
+  --tray-bg: #e2ded8;
+  --tray-border: rgba(0, 0, 0, 0.06);
+  --tray-shadow:
+    inset 0 2px 5px rgba(36, 32, 26, 0.11),
+    inset 0 1px 1px rgba(36, 32, 26, 0.07),
+    0 1px 0 rgba(255, 255, 255, 0.72);
+
+  --key-face: #f0f0f0;
+  --key-face-hover: #f3f2ef;
+  --key-face-active: #ebe8e3;
+  --key-top-highlight: #f4f4f4;
+  --key-s1: #efefef;
+  --key-s2: #ececec;
+  --key-s3: #e0e0e0;
+  --key-s4: #dedede;
+  --key-s5: #dcdcdc;
+  --key-s6: #cacaca;
+  --key-ambient: #cecece;
+
+  --ink: #242424;
+  --ink-muted: #5c5852;
+  --ink-subtle: #7c776f;
+  --key-text-shadow: 0 0.0625em 0 #ffffff;
+
+  --lcd-bg: #dfd9cf;
+  --lcd-border: rgba(44, 38, 30, 0.12);
+  --lcd-shadow:
+    inset 0 2px 4px rgba(36, 32, 26, 0.14),
+    0 1px 0 rgba(255, 255, 255, 0.8);
+  --lcd-ink: #1e1d1b;
+
+  --card-sheen: rgba(255, 255, 255, 0.58);
+  --divider: rgba(36, 36, 36, 0.09);
+
+  /* Semantic Urgency LEDs */
+  --led-live: #10b981;
+  --led-soon: #f59e0b;
+  --led-urgent: #ef4444;
+  --led-past: #8c857b;
+
+  /* 6 Deterministic Anodized Course Accents */
+  --c0: #2563eb;
+  --c0-glow: rgba(37, 99, 235, 0.35);
+  --c1: #ea580c;
+  --c1-glow: rgba(234, 88, 12, 0.35);
+  --c2: #059669;
+  --c2-glow: rgba(5, 150, 105, 0.35);
+  --c3: #9333ea;
+  --c3-glow: rgba(147, 51, 234, 0.35);
+  --c4: #0d9488;
+  --c4-glow: rgba(13, 148, 136, 0.35);
+  --c5: #dc2626;
+  --c5-glow: rgba(220, 38, 38, 0.35);
+
+  --radius-tray: 20px;
+  --radius-card: 16px;
+  --radius-key: 12px;
+  --sq: 18px;
+  --sq-card: 21px;
+}
+
+html[data-theme="dark"] {
+  /* Matte Charcoal PBT Keycaps */
+  --canvas-bg: #1b1a18;
+  --canvas-dot: rgba(255, 248, 236, 0.05);
+  --tray-bg: #131210;
+  --tray-border: rgba(255, 255, 255, 0.05);
+  --tray-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.58),
+    inset 0 1px 1px rgba(0, 0, 0, 0.45),
+    0 1px 0 rgba(255, 255, 255, 0.05);
+
+  --key-face: #2b2926;
+  --key-face-hover: #302d2a;
+  --key-face-active: #252320;
+  --key-top-highlight: #3a3733;
+  --key-s1: #242220;
+  --key-s2: #201e1c;
+  --key-s3: #191715;
+  --key-s4: #161412;
+  --key-s5: #121110;
+  --key-s6: #0d0c0b;
+  --key-ambient: rgba(0, 0, 0, 0.72);
+
+  --ink: #eeeae2;
+  --ink-muted: #b0a99d;
+  --ink-subtle: #878177;
+  --key-text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.65);
+
+  --lcd-bg: #161513;
+  --lcd-border: rgba(255, 255, 255, 0.06);
+  --lcd-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.65),
+    0 1px 0 rgba(255, 255, 255, 0.05);
+  --lcd-ink: #f3efe6;
+
+  --card-sheen: rgba(255, 250, 240, 0.07);
+  --divider: rgba(255, 255, 255, 0.08);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background-color: var(--canvas-bg);
+  background-image: radial-gradient(var(--canvas-dot) 1px, transparent 1px);
+  background-size: 16px 16px;
+  color: var(--ink);
+  font-family: 'Plus Jakarta Sans', 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.45;
+  transition: background-color 0.28s ease, color 0.25s ease;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.is-hidden {
+  display: none !important;
+}
+
+.chassis {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 28px 20px 44px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ==========================================================================
+   Core Squishy Keycap Primitive (from CodePen qBvYdXL)
+   ========================================================================== */
+
+.squishy-btn,
+.squishy-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink);
+  background-color: var(--key-face);
+  border: 0;
+  border-radius: var(--radius-key);
+  padding: 9px 14px;
+  text-shadow: var(--key-text-shadow);
+  box-shadow:
+    inset 0 calc(0.0625 * var(--sq)) 0 0 var(--key-top-highlight),
+    0 calc(0.0625 * var(--sq)) 0 0 var(--key-s1),
+    0 calc(0.125 * var(--sq)) 0 0 var(--key-s2),
+    0 calc(0.25 * var(--sq)) 0 0 var(--key-s3),
+    0 calc(0.3125 * var(--sq)) 0 0 var(--key-s4),
+    0 calc(0.375 * var(--sq)) 0 0 var(--key-s5),
+    0 calc(0.425 * var(--sq)) 0 0 var(--key-s6),
+    0 calc(0.425 * var(--sq)) calc(0.5 * var(--sq)) 0 var(--key-ambient);
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.2s ease,
+    color 0.2s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  user-select: none;
+  cursor: pointer;
+}
+
+/* Invisible bottom hit-box skirt preventing hover jitter on lower extrusion */
+.squishy-btn::after {
+  position: absolute;
+  content: "";
+  display: block;
+  width: 100%;
+  height: calc(100% + (0.375 * var(--sq)));
+  top: 0;
+  left: 0;
+  background-color: transparent;
+  transition: height 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: auto;
+}
+
+.squishy-btn:hover,
+.squishy-btn:active,
+.squishy-btn.is-active,
+.squishy-btn[aria-pressed="true"] {
+  background-color: var(--key-face-hover);
+  transform: translateY(calc(0.225 * var(--sq)));
+  box-shadow:
+    inset 0 calc(0.03 * var(--sq)) 0 0 var(--key-top-highlight),
+    0 calc(0.03 * var(--sq)) 0 0 var(--key-s1),
+    0 calc(0.0625 * var(--sq)) 0 0 var(--key-s2),
+    0 calc(0.125 * var(--sq)) 0 0 var(--key-s3),
+    0 calc(0.125 * var(--sq)) 0 0 var(--key-s4),
+    0 calc(0.2 * var(--sq)) 0 0 var(--key-s5),
+    0 calc(0.225 * var(--sq)) 0 0 var(--key-s6),
+    0 calc(0.225 * var(--sq)) calc(0.375 * var(--sq)) 0 var(--key-ambient);
+}
+
+.squishy-btn.is-active,
+.squishy-btn[aria-pressed="true"] {
+  background-color: var(--key-face-active);
+}
+
+.squishy-btn:active,
+.squishy-btn.is-active:active {
+  transform: translateY(calc(0.29 * var(--sq)));
+  box-shadow:
+    inset 0 calc(0.02 * var(--sq)) 0 0 var(--key-top-highlight),
+    0 calc(0.02 * var(--sq)) 0 0 var(--key-s1),
+    0 calc(0.04 * var(--sq)) 0 0 var(--key-s2),
+    0 calc(0.08 * var(--sq)) 0 0 var(--key-s3),
+    0 calc(0.1 * var(--sq)) 0 0 var(--key-s4),
+    0 calc(0.14 * var(--sq)) 0 0 var(--key-s5),
+    0 calc(0.155 * var(--sq)) 0 0 var(--key-s6),
+    0 calc(0.155 * var(--sq)) calc(0.26 * var(--sq)) 0 var(--key-ambient);
+}
+
+.squishy-btn:hover::after,
+.squishy-btn:active::after,
+.squishy-btn.is-active::after,
+.squishy-btn[aria-pressed="true"]::after {
+  height: calc(100% + (0.225 * var(--sq)));
+}
+
+.squishy-btn:focus-visible {
+  outline: 2px solid var(--c0);
+  outline-offset: 4px;
+}
+
+/* ==========================================================================
+   Header Deck & Toolbar
+   ========================================================================== */
+
+.header-deck {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.brand-cluster {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-badge {
+  --sq: 20px;
+  cursor: default;
+  flex-direction: column;
+  gap: 4px;
+  width: 56px;
+  height: 54px;
+  padding: 6px;
+  border-radius: 14px;
+}
+
+.badge-led {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fdba74, #ea580c 65%, #9a3412);
+  box-shadow: 0 0 8px rgba(234, 88, 12, 0.55);
+}
+
+.badge-mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.eyebrow-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.sync-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+  background: var(--tray-bg);
+  padding: 3px 9px;
+  border-radius: 999px;
+  box-shadow: var(--tray-shadow);
+}
+
+.sync-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--led-live);
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.65);
+}
+
+.sync-pill.is-error .sync-dot {
+  background: var(--led-urgent);
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.65);
+}
+
+.privacy-tag {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--ink-subtle);
+  letter-spacing: 0.01em;
+}
+
+.site-title {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.8vw, 2.05rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  text-shadow: var(--key-text-shadow);
+}
+
+.toolbar-rack {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px 15px;
+  background: var(--tray-bg);
+  border: 1px solid var(--tray-border);
+  border-radius: var(--radius-tray);
+  box-shadow: var(--tray-shadow);
+}
+
+.toolbar-btn {
+  --sq: 16px;
+  padding: 8px 12px;
+  font-size: 0.8125rem;
+  border-radius: 10px;
+}
+
+.btn-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ink-subtle);
+  opacity: 0.45;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.toolbar-btn.is-active .btn-led {
+  opacity: 1;
+  background: var(--c1);
+  box-shadow: 0 0 8px var(--c1-glow);
+}
+
+.toolbar-btn.is-active .btn-led-sfx {
+  background: var(--led-live);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+
+.btn-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--lcd-bg);
+  color: var(--lcd-ink);
+  box-shadow: var(--lcd-shadow);
+}
+
+.btn-accent-action {
+  color: var(--c0);
+}
+
+/* ==========================================================================
+   Telemetry Strip & Recessed Search Well
+   ========================================================================== */
+
+.instrument-bay {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  align-items: stretch;
+}
+
+.telemetry-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(98px, 1fr));
+  gap: 10px;
+  padding: 10px;
+  background: var(--tray-bg);
+  border: 1px solid var(--tray-border);
+  border-radius: var(--radius-tray);
+  box-shadow: var(--tray-shadow);
+}
+
+.telemetry-module {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.telemetry-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ink-subtle);
+  padding-inline: 4px;
+}
+
+.lcd-well {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+  background: var(--lcd-bg);
+  border: 1px solid var(--lcd-border);
+  border-radius: 10px;
+  padding: 7px 11px;
+  box-shadow: var(--lcd-shadow);
+}
+
+.lcd-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--lcd-ink);
+  line-height: 1;
+}
+
+.lcd-well-warn .lcd-value {
+  color: #c2410c;
+}
+
+html[data-theme="dark"] .lcd-well-warn .lcd-value {
+  color: #fb923c;
+}
+
+.lcd-well-muted .lcd-value {
+  color: var(--ink-muted);
+}
+
+.lcd-sub {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--ink-subtle);
+}
+
+.search-tray {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: var(--tray-bg);
+  border: 1px solid var(--tray-border);
+  border-radius: var(--radius-tray);
+  box-shadow: var(--tray-shadow);
+}
+
+.search-well {
+  width: 100%;
+  height: 100%;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px 6px 14px;
+  background: var(--lcd-bg);
+  border: 1px solid var(--lcd-border);
+  border-radius: 12px;
+  box-shadow: var(--lcd-shadow);
+}
+
+.search-icon {
+  color: var(--ink-subtle);
+  flex-shrink: 0;
+}
+
+.search-input {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--lcd-ink);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--ink-subtle);
+}
+
+.mini-clear-btn {
+  --sq: 13px;
+  padding: 5px 10px;
+  font-size: 0.75rem;
+  border-radius: 8px;
+  flex-shrink: 0;
+  margin-bottom: 4px;
+}
+
+/* ==========================================================================
+   Course Filter Chips Rack
+   ========================================================================== */
+
+.filter-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px 20px;
+  background: var(--tray-bg);
+  border: 1px solid var(--tray-border);
+  border-radius: var(--radius-tray);
+  box-shadow: var(--tray-shadow);
+}
+
+.section-cap-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  color: var(--ink-subtle);
+}
+
+.section-hint {
+  font-size: 0.76rem;
+  color: var(--ink-subtle);
+  font-weight: 500;
+}
+
+.course-rack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.course-chip {
+  --sq: 18px;
+  --chip-accent: var(--c0);
+  --chip-glow: var(--c0-glow);
+  padding: 10px 14px;
+  border-radius: 12px;
+  justify-content: flex-start;
+  max-width: 100%;
+}
+
+.course-chip.accent-0 { --chip-accent: var(--c0); --chip-glow: var(--c0-glow); }
+.course-chip.accent-1 { --chip-accent: var(--c1); --chip-glow: var(--c1-glow); }
+.course-chip.accent-2 { --chip-accent: var(--c2); --chip-glow: var(--c2-glow); }
+.course-chip.accent-3 { --chip-accent: var(--c3); --chip-glow: var(--c3-glow); }
+.course-chip.accent-4 { --chip-accent: var(--c4); --chip-glow: var(--c4-glow); }
+.course-chip.accent-5 { --chip-accent: var(--c5); --chip-glow: var(--c5-glow); }
+
+.chip-led {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: radial-gradient(circle at 32% 32%, rgba(255, 255, 255, 0.78), var(--chip-accent) 62%);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.course-chip.is-active .chip-led {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.45), 0 0 11px var(--chip-glow);
+  transform: scale(1.08);
+}
+
+.chip-all-led {
+  background: linear-gradient(135deg, var(--c0), var(--c1), var(--c2), var(--c3));
+}
+
+.chip-code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  direction: ltr;
+  unicode-bidi: isolate;
+  color: var(--chip-accent);
+}
+
+.chip-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 24ch;
+}
+
+.chip-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--lcd-bg);
+  color: var(--lcd-ink);
+  box-shadow: var(--lcd-shadow);
+  margin-inline-start: 2px;
+}
+
+.course-chip.is-active {
+  box-shadow:
+    inset 0 calc(0.03 * var(--sq)) 0 0 var(--key-top-highlight),
+    inset 0 0 0 1.5px var(--chip-accent),
+    0 calc(0.03 * var(--sq)) 0 0 var(--key-s1),
+    0 calc(0.0625 * var(--sq)) 0 0 var(--key-s2),
+    0 calc(0.125 * var(--sq)) 0 0 var(--key-s3),
+    0 calc(0.125 * var(--sq)) 0 0 var(--key-s4),
+    0 calc(0.2 * var(--sq)) 0 0 var(--key-s5),
+    0 calc(0.225 * var(--sq)) 0 0 var(--key-s6),
+    0 calc(0.225 * var(--sq)) calc(0.375 * var(--sq)) 0 var(--key-ambient);
+}
+
+/* ==========================================================================
+   Deadlines Feed & Squishy Hardware Cards
+   ========================================================================== */
+
+.board-main {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.feed-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.feed-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-inline: 4px;
+}
+
+.feed-heading {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-shadow: var(--key-text-shadow);
+}
+
+.heading-led {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.heading-led-live {
+  background: var(--led-live);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.55);
+}
+
+.heading-led-past {
+  background: var(--led-past);
+}
+
+.retention-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--tray-bg);
+  color: var(--ink-muted);
+  box-shadow: var(--tray-shadow);
+}
+
+.feed-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--ink-muted);
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 22px 18px;
+  padding-bottom: 10px;
+}
+
+/* Tactile Deadline Card Tile */
+.deadline-card {
+  --sq: var(--sq-card);
+  --card-accent: var(--c0);
+  --card-glow: var(--c0-glow);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 18px 16px;
+  border-radius: var(--radius-card);
+  background-color: var(--key-face);
+  color: var(--ink);
+  box-shadow:
+    inset 0 calc(0.0625 * var(--sq)) 0 0 var(--key-top-highlight),
+    0 calc(0.0625 * var(--sq)) 0 0 var(--key-s1),
+    0 calc(0.125 * var(--sq)) 0 0 var(--key-s2),
+    0 calc(0.25 * var(--sq)) 0 0 var(--key-s3),
+    0 calc(0.3125 * var(--sq)) 0 0 var(--key-s4),
+    0 calc(0.375 * var(--sq)) 0 0 var(--key-s5),
+    0 calc(0.425 * var(--sq)) 0 0 var(--key-s6),
+    0 calc(0.425 * var(--sq)) calc(0.5 * var(--sq)) 0 var(--key-ambient);
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.2s ease,
+    opacity 0.25s ease;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  animation: card-pop-in 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--stagger, 0) * 45ms);
+}
+
+.deadline-card.accent-0 { --card-accent: var(--c0); --card-glow: var(--c0-glow); }
+.deadline-card.accent-1 { --card-accent: var(--c1); --card-glow: var(--c1-glow); }
+.deadline-card.accent-2 { --card-accent: var(--c2); --card-glow: var(--c2-glow); }
+.deadline-card.accent-3 { --card-accent: var(--c3); --card-glow: var(--c3-glow); }
+.deadline-card.accent-4 { --card-accent: var(--c4); --card-glow: var(--c4-glow); }
+.deadline-card.accent-5 { --card-accent: var(--c5); --card-glow: var(--c5-glow); }
+
+/* Specular pointer sheen */
+.deadline-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    360px circle at var(--mx, 50%) var(--my, 15%),
+    var(--card-sheen),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Invisible bottom hit-box skirt preventing hover flicker */
+.deadline-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% + (0.375 * var(--sq)));
+  background: transparent;
+  transition: height 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: auto;
+  z-index: 0;
+}
+
+.deadline-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.deadline-card:hover::before,
+.deadline-card.is-expanded::before {
+  opacity: 1;
+}
+
+.deadline-card:hover,
+.deadline-card:active,
+.deadline-card.is-expanded {
+  background-color: var(--key-face-hover);
+  transform: translateY(calc(0.225 * var(--sq)));
+  box-shadow:
+    inset 0 calc(0.03 * var(--sq)) 0 0 var(--key-top-highlight),
+    0 calc(0.03 * var(--sq)) 0 0 var(--key-s1),
+    0 calc(0.0625 * var(--sq)) 0 0 var(--key-s2),
+    0 calc(0.125 * var(--sq)) 0 0 var(--key-s3),
+    0 calc(0.125 * var(--sq)) 0 0 var(--key-s4),
+    0 calc(0.2 * var(--sq)) 0 0 var(--key-s5),
+    0 calc(0.225 * var(--sq)) 0 0 var(--key-s6),
+    0 calc(0.225 * var(--sq)) calc(0.375 * var(--sq)) 0 var(--key-ambient);
+}
+
+.deadline-card:hover::after,
+.deadline-card:active::after,
+.deadline-card.is-expanded::after {
+  height: calc(100% + (0.225 * var(--sq)));
+}
+
+.deadline-card:focus-visible {
+  outline: 2px solid var(--card-accent);
+  outline-offset: 4px;
+}
+
+@keyframes card-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.card-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.course-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.course-bar {
+  width: 5px;
+  height: 22px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  background: var(--card-accent);
+  box-shadow: 0 0 8px var(--card-glow);
+}
+
+.course-meta-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.course-code-inline {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--card-accent);
+  direction: ltr;
+  unicode-bidi: isolate;
+  line-height: 1.15;
+}
+
+.course-short-inline {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.urgency-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--lcd-bg);
+  color: var(--ink-muted);
+  box-shadow: var(--lcd-shadow);
+}
+
+.urgency-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.urgency-urgent .urgency-dot {
+  background: var(--led-urgent);
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.75);
+  animation: led-pulse 1.5s ease-in-out infinite;
+}
+
+.urgency-urgent {
+  color: #b91c1c;
+}
+
+html[data-theme="dark"] .urgency-urgent {
+  color: #fca5a5;
+}
+
+.urgency-soon .urgency-dot {
+  background: var(--led-soon);
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.65);
+}
+
+.urgency-soon {
+  color: #b45309;
+}
+
+html[data-theme="dark"] .urgency-soon {
+  color: #fcd34d;
+}
+
+.urgency-normal .urgency-dot {
+  background: var(--led-live);
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.5);
+}
+
+.urgency-past .urgency-dot {
+  background: var(--led-past);
+}
+
+@keyframes led-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.85); }
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  color: var(--ink);
+  text-shadow: var(--key-text-shadow);
+  word-break: break-word;
+}
+
+/* Recessed LCD Due Readout */
+.card-lcd {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 11px 13px;
+  border-radius: 11px;
+  background: var(--lcd-bg);
+  border: 1px solid var(--lcd-border);
+  box-shadow: var(--lcd-shadow);
+}
+
+.lcd-countdown-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.lcd-countdown {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--lcd-ink);
+  letter-spacing: -0.02em;
+}
+
+.lcd-retention {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--ink-subtle);
+}
+
+.lcd-datetime {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.card-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 2px;
+  font-size: 0.8125rem;
+  color: var(--ink-muted);
+}
+
+.doctor-label {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.expand-cue {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--ink-subtle);
+  flex-shrink: 0;
+}
+
+/* Expandable Drawer inside Card */
+.card-drawer {
+  display: none;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--divider);
+}
+
+.deadline-card.is-expanded .card-drawer {
+  display: flex;
+}
+
+.drawer-btn {
+  --sq: 13px;
+  padding: 7px 11px;
+  font-size: 0.76rem;
+  border-radius: 9px;
+  margin-bottom: 4px;
+}
+
+/* Muted vintage-stamped appearance for recently past-due cards */
+.deadline-card.is-past {
+  opacity: 0.86;
+}
+
+.deadline-card.is-past:hover,
+.deadline-card.is-past.is-expanded {
+  opacity: 1;
+}
+
+.deadline-card.is-past .course-bar {
+  filter: saturate(0.45);
+  box-shadow: none;
+}
+
+/* ==========================================================================
+   Skeleton, Empty States, Footer & Toast
+   ========================================================================== */
+
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 18px;
+}
+
+.skeleton-card {
+  height: 185px;
+  border-radius: var(--radius-card);
+  background: var(--tray-bg);
+  box-shadow: var(--tray-shadow);
+  animation: skel-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes skel-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 0.9; }
+}
+
+.empty-well {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 10px;
+  padding: 40px 24px 44px;
+  background: var(--tray-bg);
+  border: 1px solid var(--tray-border);
+  border-radius: var(--radius-tray);
+  box-shadow: var(--tray-shadow);
+}
+
+.empty-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.empty-desc {
+  margin: 0 0 6px;
+  font-size: 0.88rem;
+  color: var(--ink-muted);
+  max-width: 48ch;
+}
+
+.chassis-footer {
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--divider);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ink-subtle);
+}
+
+.footer-left {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.toast-keycap {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  z-index: 50;
+  --sq: 15px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: var(--key-face);
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-shadow: var(--key-text-shadow);
+  box-shadow:
+    inset 0 calc(0.0625 * var(--sq)) 0 0 var(--key-top-highlight),
+    0 calc(0.0625 * var(--sq)) 0 0 var(--key-s1),
+    0 calc(0.125 * var(--sq)) 0 0 var(--key-s2),
+    0 calc(0.25 * var(--sq)) 0 0 var(--key-s3),
+    0 calc(0.375 * var(--sq)) 0 0 var(--key-s5),
+    0 calc(0.425 * var(--sq)) calc(0.5 * var(--sq)) 0 var(--key-ambient);
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.toast-keycap.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   Responsive & Reduced Motion
+   ========================================================================== */
+
+@media (max-width: 860px) {
+  .instrument-bay {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .chassis {
+    padding: 18px 14px 36px;
+  }
+
+  .telemetry-strip {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 7px;
+    padding: 8px;
+  }
+
+  .lcd-well {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    padding: 7px 9px;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .toolbar-rack {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

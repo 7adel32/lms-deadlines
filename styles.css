@@ -560,12 +560,6 @@ html[data-theme="dark"] .lcd-well-warn .lcd-value {
   color: var(--ink-subtle);
 }
 
-.section-hint {
-  font-size: 0.76rem;
-  color: var(--ink-subtle);
-  font-weight: 500;
-}
-
 .course-rack {
   display: flex;
   flex-wrap: wrap;
@@ -759,7 +753,7 @@ html[data-theme="dark"] .lcd-well-warn .lcd-value {
     box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1),
     background-color 0.2s ease,
     opacity 0.25s ease;
-  cursor: pointer;
+  cursor: default;
   touch-action: manipulation;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   animation: card-pop-in 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -809,14 +803,12 @@ html[data-theme="dark"] .lcd-well-warn .lcd-value {
   z-index: 1;
 }
 
-.deadline-card:hover::before,
-.deadline-card.is-expanded::before {
+.deadline-card:hover::before {
   opacity: 1;
 }
 
 .deadline-card:hover,
-.deadline-card:active,
-.deadline-card.is-expanded {
+.deadline-card:active {
   background-color: var(--key-face-hover);
   transform: translateY(calc(0.225 * var(--sq)));
   box-shadow:
@@ -831,8 +823,7 @@ html[data-theme="dark"] .lcd-well-warn .lcd-value {
 }
 
 .deadline-card:hover::after,
-.deadline-card:active::after,
-.deadline-card.is-expanded::after {
+.deadline-card:active::after {
   height: calc(100% + (0.225 * var(--sq)));
 }
 
@@ -1037,42 +1028,12 @@ html[data-theme="dark"] .urgency-soon {
   text-overflow: ellipsis;
 }
 
-.expand-cue {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--ink-subtle);
-  flex-shrink: 0;
-}
-
-/* Expandable Drawer inside Card */
-.card-drawer {
-  display: none;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding-top: 10px;
-  border-top: 1px dashed var(--divider);
-}
-
-.deadline-card.is-expanded .card-drawer {
-  display: flex;
-}
-
-.drawer-btn {
-  --sq: 13px;
-  padding: 7px 11px;
-  font-size: 0.76rem;
-  border-radius: 9px;
-  margin-bottom: 4px;
-}
-
 /* Muted vintage-stamped appearance for recently past-due cards */
 .deadline-card.is-past {
   opacity: 0.86;
 }
 
-.deadline-card.is-past:hover,
-.deadline-card.is-past.is-expanded {
+.deadline-card.is-past:hover {
   opacity: 1;
 }
 
@@ -1138,18 +1099,11 @@ html[data-theme="dark"] .urgency-soon {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 10px;
   font-size: 0.78rem;
   font-weight: 500;
   color: var(--ink-subtle);
-}
-
-.footer-left {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
 }
 
 .toast-keycap {

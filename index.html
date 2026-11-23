@@ -22,7 +22,7 @@
       } catch (e) {}
     })();
   </script>
-  <link rel="stylesheet" href="./styles.css?v=3">
+  <link rel="stylesheet" href="./styles.css?v=4">
 </head>
 <body>
   <div class="chassis">
@@ -148,8 +148,7 @@
     <!-- Course Filter Keycap Rack -->
     <section class="filter-deck" aria-label="Course filters">
       <div class="section-cap-bar">
-        <span class="section-label">COURSE FILTER CHIPS</span>
-        <span class="section-hint" id="filter-hint">Press any keycap to isolate a course</span>
+        <span class="section-label">FILTER</span>
       </div>
       <div class="course-rack" id="course-rack" role="group" aria-label="Filter deadlines by course">
         <!-- Populated dynamically by app.js -->
@@ -207,11 +206,6 @@
 
     <!-- Tactile Footer -->
     <footer class="chassis-footer">
-      <div class="footer-left">
-        <span>Auto-synced via Hermes LMS Sentinel</span>
-        <span class="sep" aria-hidden="true">·</span>
-        <span>Zero submission status or grade data published</span>
-      </div>
       <div class="footer-right" id="footer-sync-meta">
         Retention window: 5 days past due
       </div>
@@ -221,6 +215,6 @@
   <!-- Subtle live toast notification -->
   <div class="toast-keycap" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="./app.js?v=2" defer></script>
+  <script src="./app.js?v=3" defer></script>
 </body>
 </html>

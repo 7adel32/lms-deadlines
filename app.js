@@ -15,7 +15,6 @@
     showPastDue: true,
     sfxEnabled: false,
     searchQuery: '',
-    expandedId: null,
     audioCtx: null,
     toastTimer: null,
   };
@@ -36,7 +35,6 @@
     searchInput: document.getElementById('search-input'),
     btnClearSearch: document.getElementById('btn-clear-search'),
     courseRack: document.getElementById('course-rack'),
-    filterHint: document.getElementById('filter-hint'),
     loadingState: document.getElementById('loading-state'),
     errorState: document.getElementById('error-state'),
     errorMessage: document.getElementById('error-message'),
@@ -382,34 +380,20 @@
     }
 
     els.courseRack.innerHTML = chips.join('');
-
-    if (state.selectedCourse) {
-      const activeCourse = state.courses.find((c) => c.slug === state.selectedCourse);
-      els.filterHint.textContent = activeCourse
-        ? `Showing ${activeCourse.code} · Click active keycap again to show all`
-        : 'Filtered by course';
-    } else {
-      els.filterHint.textContent = 'Press any keycap to isolate a course';
-    }
   }
 
   function renderCardHtml(item, nowMs, staggerIndex) {
     const timing = describeTiming(item.dueMs, nowMs);
     const accentClass = `accent-${item.accent_index % 6}`;
-    const expanded = state.expandedId === item.id;
     const pastClass = timing.isPast ? ' is-past' : '';
-    const expandedClass = expanded ? ' is-expanded' : '';
     const formattedDate = formatDueTimestamp(item.dueMs);
 
     return `
       <article
-        class="deadline-card ${accentClass}${pastClass}${expandedClass}"
+        class="deadline-card ${accentClass}${pastClass}"
         style="--stagger: ${Math.min(staggerIndex, 10)}"
         data-deadline-id="${escapeHtml(item.id)}"
         data-due-ms="${item.dueMs}"
-        tabindex="0"
-        role="button"
-        aria-expanded="${expanded}"
       >
         <div class="card-top-row">
           <div class="course-tag">
@@ -437,16 +421,6 @@
 
         <div class="card-footer-row">
           <span class="doctor-label" dir="auto">${escapeHtml(item.doctor || 'Course Instructor')}</span>
-          <span class="expand-cue">${expanded ? 'Hide actions ▲' : 'Actions ▼'}</span>
-        </div>
-
-        <div class="card-drawer">
-          <button type="button" class="squishy-btn drawer-btn" data-action="copy" data-id="${escapeHtml(item.id)}">
-            Copy Details
-          </button>
-          <button type="button" class="squishy-btn drawer-btn" data-action="ics" data-id="${escapeHtml(item.id)}">
-            Add to Calendar (.ics)
-          </button>
         </div>
       </article>
     `;
@@ -716,52 +690,6 @@
         state.selectedCourse = slug;
       }
       renderAll();
-    });
-
-    // Card click / drawer actions (delegated across boardMain)
-    document.getElementById('board-main').addEventListener('click', async (e) => {
-      const actionBtn = e.target.closest('[data-action]');
-      if (actionBtn) {
-        e.stopPropagation();
-        playKeySound('down');
-        const id = actionBtn.dataset.id;
-        const item = state.deadlines.find((d) => d.id === id);
-        if (!item) return;
-
-        if (actionBtn.dataset.action === 'copy') {
-          const text = `${item.title}\nCourse: ${item.course_full_name}\nInstructor: ${item.doctor}\nDue: ${formatDueTimestamp(item.dueMs)}`;
-          try {
-            await navigator.clipboard.writeText(text);
-            actionBtn.textContent = 'Copied!';
-            showToast('Deadline details copied');
-            setTimeout(() => {
-              if (actionBtn.isConnected) actionBtn.textContent = 'Copy Details';
-            }, 1400);
-          } catch (err) {
-            showToast('Clipboard permission unavailable');
-          }
-        } else if (actionBtn.dataset.action === 'ics') {
-          const safeSlug = item.course_slug.replace(/[^a-z0-9-]+/gi, '-');
-          downloadIcs([item], `${safeSlug}-${item.id}.ics`);
-        }
-        return;
-      }
-
-      const card = e.target.closest('.deadline-card');
-      if (!card) return;
-      playKeySound('up');
-      const id = card.dataset.deadlineId;
-      state.expandedId = state.expandedId === id ? null : id;
-      renderAll();
-    });
-
-    // Keyboard activation for cards
-    document.getElementById('board-main').addEventListener('keydown', (e) => {
-      if (e.key !== 'Enter' && e.key !== ' ') return;
-      const card = e.target.closest('.deadline-card');
-      if (!card || e.target.closest('button')) return;
-      e.preventDefault();
-      card.click();
     });
 
     // Lightweight pointer-tracking specular sheen

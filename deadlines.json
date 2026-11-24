@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-23T06:32:18Z",
+  "generated_at": "2026-11-24T07:52:41Z",
   "past_due_retention_days": 5,
   "courses": [
     {
@@ -95,6 +95,17 @@
       "doctor": "د. عماد الحربي",
       "due_iso": "2026-11-27T20:59:00Z",
       "accent_index": 0
+    },
+    {
+      "id": "1efa4de1f2d9",
+      "title": "New Assignment 11/24/26",
+      "course_slug": "602-csc",
+      "course_code": "602 CSC",
+      "course_short_name": "الرياضيات الحاسوبية",
+      "course_full_name": "الرياضيات الحاسوبية 602 CSC_شعبة(227)نظري",
+      "doctor": "د. محمد زيشان عالم",
+      "due_iso": "2026-12-02T20:59:00Z",
+      "accent_index": 1
     }
   ]
 }

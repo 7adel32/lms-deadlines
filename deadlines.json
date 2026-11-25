@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-24T21:12:36Z",
+  "generated_at": "2026-11-25T07:56:59Z",
   "past_due_retention_days": 5,
   "courses": [
     {
@@ -73,6 +73,17 @@
       "doctor": "د. محمد الوكيل",
       "due_iso": "2026-11-25T16:34:00Z",
       "accent_index": 3
+    },
+    {
+      "id": "6d957ee3b2c4",
+      "title": "QUIZ # 1",
+      "course_slug": "602-csc",
+      "course_code": "602 CSC",
+      "course_short_name": "الرياضيات الحاسوبية",
+      "course_full_name": "الرياضيات الحاسوبية 602 CSC_شعبة(227)نظري",
+      "doctor": "د. محمد زيشان عالم",
+      "due_iso": "2026-11-26T07:36:01Z",
+      "accent_index": 1
     },
     {
       "id": "bb3257a2578b",

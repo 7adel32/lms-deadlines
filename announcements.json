@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-26T15:22:39Z",
+  "generated_at": "2026-11-26T15:26:26Z",
   "courses": [
     {
       "slug": "601-csc",
@@ -344,7 +344,7 @@
           "url": "https://login.microsoftonline.com/"
         },
         {
-          "title": "External Link",
+          "title": "forms.office.com",
           "url": "https://forms.office.com/r/Udx8VWVu60"
         }
       ],

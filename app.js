@@ -6,37 +6,57 @@
   const HOUR_MS = 60 * 60 * 1000;
   const MIN_MS = 60 * 1000;
   const PAST_DUE_WINDOW_MS = 5 * DAY_MS;
+  const WEEK_MS = 7 * DAY_MS;
+  const ANN_PREVIEW_CHAR_LIMIT = 260;
+  const ANN_PREVIEW_LINE_LIMIT = 5;
 
   const state = {
+    activeView: 'deadlines', // 'deadlines' | 'announcements'
+    viewMenuOpen: false,
     courses: [],
     deadlines: [],
-    generatedAt: null,
+    announcements: [],
+    deadlinesGeneratedAt: null,
+    announcementsGeneratedAt: null,
+    deadlinesRetentionDays: 5,
+    deadlinesError: null,
+    announcementsError: null,
     selectedCourse: null, // null = All Courses
     showPastDue: true,
-    sfxEnabled: false,
     searchQuery: '',
-    audioCtx: null,
-    toastTimer: null,
+    expandedAnnouncements: new Set(),
   };
 
   const els = {
     syncStatus: document.getElementById('sync-status'),
     syncText: document.getElementById('sync-text'),
+    viewSwitcher: document.getElementById('view-switcher'),
+    btnViewMenu: document.getElementById('btn-view-menu'),
+    viewMenuLabel: document.getElementById('view-menu-label'),
+    viewMenuList: document.getElementById('view-menu-list'),
     btnPastDue: document.getElementById('btn-past-due'),
     pastDueBtnCount: document.getElementById('past-due-btn-count'),
-    btnSfx: document.getElementById('btn-sfx'),
     btnTheme: document.getElementById('btn-theme'),
     themeIcon: document.getElementById('theme-icon'),
     themeLabel: document.getElementById('theme-label'),
     btnExportAll: document.getElementById('btn-export-all'),
+    statLabel1: document.getElementById('stat-label-1'),
+    statLabel2: document.getElementById('stat-label-2'),
+    statLabel3: document.getElementById('stat-label-3'),
+    statSub1: document.getElementById('stat-sub-1'),
+    statSub2: document.getElementById('stat-sub-2'),
+    statSub3: document.getElementById('stat-sub-3'),
+    statWell2: document.getElementById('stat-well-2'),
     statUpcoming: document.getElementById('stat-upcoming'),
     statSoon: document.getElementById('stat-soon'),
     statPast: document.getElementById('stat-past'),
+    searchLabel: document.getElementById('search-label'),
     searchInput: document.getElementById('search-input'),
     btnClearSearch: document.getElementById('btn-clear-search'),
     courseRack: document.getElementById('course-rack'),
     loadingState: document.getElementById('loading-state'),
     errorState: document.getElementById('error-state'),
+    errorTitle: document.getElementById('error-title'),
     errorMessage: document.getElementById('error-message'),
     btnRetry: document.getElementById('btn-retry'),
     upcomingSection: document.getElementById('upcoming-section'),
@@ -45,11 +65,14 @@
     pastSection: document.getElementById('past-section'),
     pastCountBadge: document.getElementById('past-count-badge'),
     pastGrid: document.getElementById('past-grid'),
+    announcementsSection: document.getElementById('announcements-section'),
+    announcementsCountBadge: document.getElementById('announcements-count-badge'),
+    announcementsGrid: document.getElementById('announcements-grid'),
     emptyState: document.getElementById('empty-state'),
+    emptyTitle: document.getElementById('empty-title'),
     emptyDesc: document.getElementById('empty-desc'),
     btnResetFilters: document.getElementById('btn-reset-filters'),
     footerSyncMeta: document.getElementById('footer-sync-meta'),
-    toast: document.getElementById('toast'),
   };
 
   function escapeHtml(value) {
@@ -61,55 +84,12 @@
       .replace(/'/g, '&#39;');
   }
 
-  function showToast(message) {
-    if (!els.toast) return;
-    els.toast.textContent = message;
-    els.toast.classList.add('is-visible');
-    clearTimeout(state.toastTimer);
-    state.toastTimer = setTimeout(() => {
-      els.toast.classList.remove('is-visible');
-    }, 2200);
+  function isSafeHttpUrl(url) {
+    return typeof url === 'string' && /^https?:\/\//i.test(url.trim());
   }
 
   /* ------------------------------------------------------------------------
-     Synthesized Mechanical Keycap Click SFX (Web Audio API, zero assets)
-     ------------------------------------------------------------------------ */
-  function playKeySound(type = 'down') {
-    if (!state.sfxEnabled) return;
-    try {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
-      if (!state.audioCtx) {
-        state.audioCtx = new AudioCtx();
-      }
-      if (state.audioCtx.state === 'suspended') {
-        state.audioCtx.resume();
-      }
-      const ctx = state.audioCtx;
-      const now = ctx.currentTime;
-
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'triangle';
-      const startFreq = type === 'down' ? 190 : 260;
-      const endFreq = type === 'down' ? 68 : 115;
-      osc.frequency.setValueAtTime(startFreq, now);
-      osc.frequency.exponentialRampToValueAtTime(endFreq, now + 0.038);
-
-      gain.gain.setValueAtTime(type === 'down' ? 0.16 : 0.09, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(now);
-      osc.stop(now + 0.05);
-    } catch (err) {
-      // Audio playback blocked or unavailable; silently ignore
-    }
-  }
-
-  /* ------------------------------------------------------------------------
-     Preferences Persistence (Theme, SFX)
+     Preferences Persistence (Theme only)
      ------------------------------------------------------------------------ */
   function applyTheme(theme) {
     const resolved = theme === 'dark' ? 'dark' : 'light';
@@ -121,36 +101,99 @@
     els.btnTheme.classList.toggle('is-active', isDark);
     els.btnTheme.setAttribute('aria-pressed', String(isDark));
     els.themeIcon.textContent = isDark ? '☀' : '◐';
-    els.themeLabel.textContent = isDark ? 'Warm Stone' : 'Dark PBT';
+    els.themeLabel.textContent = isDark ? 'Light Mode' : 'Dark Mode';
     try {
       localStorage.setItem('lms_deadlines_theme', resolved);
     } catch (e) {}
   }
 
-  function applySfxPref(enabled) {
-    state.sfxEnabled = Boolean(enabled);
-    els.btnSfx.classList.toggle('is-active', state.sfxEnabled);
-    els.btnSfx.setAttribute('aria-pressed', String(state.sfxEnabled));
-    try {
-      localStorage.setItem('lms_deadlines_sfx', state.sfxEnabled ? '1' : '0');
-    } catch (e) {}
-  }
-
   function loadPreferences() {
     let savedTheme = 'light';
-    let savedSfx = '0';
     try {
       savedTheme = localStorage.getItem('lms_deadlines_theme') || 'light';
-      savedSfx = localStorage.getItem('lms_deadlines_sfx') || '0';
     } catch (e) {}
     applyTheme(savedTheme);
-    applySfxPref(savedSfx === '1');
+  }
+
+  /* ------------------------------------------------------------------------
+     Title Pull-Down View Switcher
+     ------------------------------------------------------------------------ */
+  function parseViewFromHash() {
+    const raw = (window.location.hash || '').replace(/^#/, '').trim().toLowerCase();
+    return raw === 'announcements' ? 'announcements' : 'deadlines';
+  }
+
+  function setViewMenuOpen(open) {
+    state.viewMenuOpen = Boolean(open);
+    els.btnViewMenu.setAttribute('aria-expanded', String(state.viewMenuOpen));
+    els.viewMenuList.classList.toggle('is-hidden', !state.viewMenuOpen);
+  }
+
+  function syncViewChrome() {
+    const isAnn = state.activeView === 'announcements';
+    els.viewMenuLabel.textContent = isAnn ? 'Announcements' : 'Deadlines';
+    document.title = isAnn ? 'Course Announcements — LMS Board' : 'Course Deadlines — LMS Board';
+
+    const options = els.viewMenuList.querySelectorAll('.title-dropdown-option');
+    for (const opt of options) {
+      const selected = opt.dataset.view === state.activeView;
+      opt.classList.toggle('is-active', selected);
+      opt.setAttribute('aria-selected', String(selected));
+    }
+
+    // Hide deadline-only controls in Announcements view
+    els.btnPastDue.classList.toggle('is-hidden', isAnn);
+    els.btnExportAll.classList.toggle('is-hidden', isAnn);
+
+    // Update search prompt & telemetry labels
+    if (isAnn) {
+      els.searchLabel.textContent = 'Search announcements by title, body, course, or lecturer';
+      els.searchInput.placeholder = 'Search announcements by title, body, course, or lecturer…';
+      els.statLabel1.textContent = 'TOTAL';
+      els.statSub1.textContent = 'posted';
+      els.statLabel2.textContent = 'THIS WEEK';
+      els.statSub2.textContent = '≤ 7 days';
+      els.statLabel3.textContent = 'COURSES';
+      els.statSub3.textContent = 'active';
+      els.statWell2.classList.remove('lcd-well-warn');
+      els.statWell2.classList.add('lcd-well-accent');
+    } else {
+      els.searchLabel.textContent = 'Filter deadlines by title, course, or instructor';
+      els.searchInput.placeholder = 'Filter by task, course code, or instructor…';
+      els.statLabel1.textContent = 'UPCOMING';
+      els.statSub1.textContent = 'active';
+      els.statLabel2.textContent = 'DUE ≤ 48H';
+      els.statSub2.textContent = 'priority';
+      els.statLabel3.textContent = 'PAST DUE ≤ 5D';
+      els.statSub3.textContent = 'retained';
+      els.statWell2.classList.add('lcd-well-warn');
+      els.statWell2.classList.remove('lcd-well-accent');
+    }
+
+    updateFeedMetaChrome();
+  }
+
+  function setActiveView(view, updateHash = true) {
+    const next = view === 'announcements' ? 'announcements' : 'deadlines';
+    state.activeView = next;
+    setViewMenuOpen(false);
+    syncViewChrome();
+    if (updateHash) {
+      const desiredHash = next === 'announcements' ? '#announcements' : '#deadlines';
+      if (window.location.hash !== desiredHash) {
+        try {
+          window.history.replaceState(null, '', desiredHash);
+        } catch (e) {}
+      }
+    }
+    renderAll();
   }
 
   /* ------------------------------------------------------------------------
      Date & Countdown Formatting
      ------------------------------------------------------------------------ */
-  function formatDueTimestamp(ms) {
+  function formatAstTimestamp(ms) {
+    if (!Number.isFinite(ms)) return '';
     const dt = new Date(ms);
     const dateFmt = new Intl.DateTimeFormat('en-US', {
       timeZone: AST_TIMEZONE,
@@ -168,16 +211,73 @@
     return `${dateFmt.format(dt)} · ${timeFmt.format(dt)} AST`;
   }
 
-  function formatRelativeSync(isoStr) {
-    if (!isoStr) return 'Synced';
+  function formatShortAstDate(ms) {
+    if (!Number.isFinite(ms)) return 'Posted';
+    const nowMs = Date.now();
+    const diff = nowMs - ms;
+    if (diff >= 0 && diff < HOUR_MS) {
+      const m = Math.max(1, Math.floor(diff / MIN_MS));
+      return `${m}m ago`;
+    }
+    if (diff >= 0 && diff < DAY_MS) {
+      const h = Math.floor(diff / HOUR_MS);
+      return `${h}h ago`;
+    }
+    if (diff >= 0 && diff < 7 * DAY_MS) {
+      const d = Math.floor(diff / DAY_MS);
+      return `${d}d ago`;
+    }
+    return new Intl.DateTimeFormat('en-US', {
+      timeZone: AST_TIMEZONE,
+      month: 'short',
+      day: 'numeric',
+    }).format(new Date(ms));
+  }
+
+  function formatRelativeUpdated(isoStr) {
+    if (!isoStr) return 'Up to date';
     const ms = Date.parse(isoStr);
-    if (Number.isNaN(ms)) return 'Synced';
+    if (Number.isNaN(ms)) return 'Up to date';
     const diffMin = Math.max(0, Math.round((Date.now() - ms) / MIN_MS));
-    if (diffMin < 1) return 'Synced just now';
-    if (diffMin < 60) return `Synced ${diffMin}m ago`;
+    if (diffMin < 1) return 'Updated just now';
+    if (diffMin < 60) return `Updated ${diffMin}m ago`;
     const diffHr = Math.round(diffMin / 60);
-    if (diffHr < 24) return `Synced ${diffHr}h ago`;
-    return `Synced ${Math.round(diffHr / 24)}d ago`;
+    if (diffHr < 24) return `Updated ${diffHr}h ago`;
+    return `Updated ${Math.round(diffHr / 24)}d ago`;
+  }
+
+  function getActiveGeneratedAt() {
+    if (state.activeView === 'announcements') {
+      return state.announcementsGeneratedAt || state.deadlinesGeneratedAt;
+    }
+    return state.deadlinesGeneratedAt || state.announcementsGeneratedAt;
+  }
+
+  function updateFeedMetaChrome() {
+    const isAnn = state.activeView === 'announcements';
+    const activeErr = isAnn ? state.announcementsError : state.deadlinesError;
+    const genAt = getActiveGeneratedAt();
+
+    if (activeErr) {
+      els.syncStatus.classList.add('is-error');
+      els.syncText.textContent = 'Feed offline';
+    } else if (genAt) {
+      els.syncStatus.classList.remove('is-error');
+      els.syncText.textContent = formatRelativeUpdated(genAt);
+    }
+
+    if (genAt && !Number.isNaN(Date.parse(genAt))) {
+      const stamp = formatAstTimestamp(Date.parse(genAt));
+      if (isAnn) {
+        els.footerSyncMeta.textContent = `Last change: ${stamp} · Current-term course announcements`;
+      } else {
+        els.footerSyncMeta.textContent = `Last change: ${stamp} · Retention: ${state.deadlinesRetentionDays} days past due`;
+      }
+    } else {
+      els.footerSyncMeta.textContent = isAnn
+        ? 'Current-term course announcements'
+        : `Retention window: ${state.deadlinesRetentionDays} days past due`;
+    }
   }
 
   function pad2(n) {
@@ -250,7 +350,7 @@
   }
 
   /* ------------------------------------------------------------------------
-     Filtering & Windowing (Strictly enforces 5-day past-due retention)
+     Filtering & Windowing
      ------------------------------------------------------------------------ */
   function getActiveWindowItems(nowMs = Date.now()) {
     return state.deadlines.filter((item) => {
@@ -259,14 +359,21 @@
     });
   }
 
-  function matchesSearch(item, query) {
+  function matchesDeadlineSearch(item, query) {
     if (!query) return true;
     const haystack = `${item.title} ${item.course_code} ${item.course_short_name} ${item.course_full_name} ${item.doctor}`.toLowerCase();
     return haystack.includes(query);
   }
 
+  function matchesAnnouncementSearch(item, query) {
+    if (!query) return true;
+    const attText = Array.isArray(item.attachments) ? item.attachments.join(' ') : '';
+    const haystack = `${item.title} ${item.body} ${item.course_code} ${item.course_short_name} ${item.course_full_name} ${item.doctor} ${attText}`.toLowerCase();
+    return haystack.includes(query);
+  }
+
   /* ------------------------------------------------------------------------
-     ICS Calendar Generator
+     ICS Calendar Generator (Deadlines view)
      ------------------------------------------------------------------------ */
   function escapeIcsText(text) {
     return String(text || '')
@@ -291,10 +398,7 @@
   }
 
   function downloadIcs(items, filename) {
-    if (!items.length) {
-      showToast('No upcoming deadlines in current filter to export.');
-      return;
-    }
+    if (!items.length) return;
     const stamp = toIcsUtc(Date.now());
     const lines = [
       'BEGIN:VCALENDAR',
@@ -336,25 +440,18 @@
     link.click();
     link.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
-    showToast(`Downloaded ${items.length} deadline${items.length === 1 ? '' : 's'} (.ics)`);
   }
 
   /* ------------------------------------------------------------------------
      Rendering
      ------------------------------------------------------------------------ */
-  function renderCourseChips(windowItems) {
-    const query = state.searchQuery.trim().toLowerCase();
-    const visibleForCounts = windowItems.filter((item) => {
-      if (!state.showPastDue && item.dueMs < Date.now()) return false;
-      return matchesSearch(item, query);
-    });
-
+  function renderCourseChips(itemsForCounts) {
     const countBySlug = new Map();
-    for (const item of visibleForCounts) {
+    for (const item of itemsForCounts) {
       countBySlug.set(item.course_slug, (countBySlug.get(item.course_slug) || 0) + 1);
     }
 
-    const totalCount = visibleForCounts.length;
+    const totalCount = itemsForCounts.length;
     const allActive = state.selectedCourse === null;
 
     const chips = [
@@ -382,11 +479,11 @@
     els.courseRack.innerHTML = chips.join('');
   }
 
-  function renderCardHtml(item, nowMs, staggerIndex) {
+  function renderDeadlineCardHtml(item, nowMs, staggerIndex) {
     const timing = describeTiming(item.dueMs, nowMs);
     const accentClass = `accent-${item.accent_index % 6}`;
     const pastClass = timing.isPast ? ' is-past' : '';
-    const formattedDate = formatDueTimestamp(item.dueMs);
+    const formattedDate = formatAstTimestamp(item.dueMs);
 
     return `
       <article
@@ -426,15 +523,134 @@
     `;
   }
 
-  function renderAll() {
+  function isLongAnnouncementBody(body) {
+    if (!body) return false;
+    return body.length > ANN_PREVIEW_CHAR_LIMIT || body.split('\n').length > ANN_PREVIEW_LINE_LIMIT;
+  }
+
+  function renderAnnouncementCardHtml(item, staggerIndex) {
+    const accentClass = `accent-${item.accent_index % 6}`;
+    const isLong = isLongAnnouncementBody(item.body);
+    const isExpanded = state.expandedAnnouncements.has(item.id);
+    const clampClass = isLong && !isExpanded ? ' is-clamped' : '';
+    const shortAge = Number.isFinite(item.postedMs) ? formatShortAstDate(item.postedMs) : 'Posted';
+    const fullDate = Number.isFinite(item.postedMs) ? formatAstTimestamp(item.postedMs) : '';
+
+    const linkChips = (item.links || [])
+      .filter((lnk) => lnk && isSafeHttpUrl(lnk.url))
+      .map(
+        (lnk) => `
+          <a
+            class="squishy-btn ann-link-chip"
+            href="${escapeHtml(lnk.url)}"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="${escapeHtml(lnk.url)}"
+          >
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            <span class="ann-link-text" dir="auto">${escapeHtml(lnk.title || 'External Link')}</span>
+          </a>
+        `
+      )
+      .join('');
+
+    const attBadges = (item.attachments || [])
+      .map(
+        (fname) => `
+          <span class="ann-attachment-pill" title="Attachment on Blackboard: ${escapeHtml(fname)}">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+            </svg>
+            <span class="ann-attachment-text" dir="auto">${escapeHtml(fname)}</span>
+          </span>
+        `
+      )
+      .join('');
+
+    const extrasHtml =
+      linkChips || attBadges
+        ? `<div class="announcement-extras">${linkChips}${attBadges}</div>`
+        : '';
+
+    const bodyHtml = item.body
+      ? `
+        <div class="announcement-body-wrap">
+          <div class="announcement-body-well">
+            <p class="announcement-body-text${clampClass}" dir="auto">${escapeHtml(item.body)}</p>
+          </div>
+          ${
+            isLong
+              ? `<button type="button" class="squishy-btn btn-expand-ann" data-ann-id="${escapeHtml(item.id)}" aria-expanded="${isExpanded}">
+                  ${isExpanded ? 'Show less' : 'Read more'}
+                </button>`
+              : ''
+          }
+        </div>
+      `
+      : '';
+
+    return `
+      <article
+        class="announcement-card ${accentClass}"
+        style="--stagger: ${Math.min(staggerIndex, 10)}"
+        data-announcement-id="${escapeHtml(item.id)}"
+      >
+        <div class="card-top-row">
+          <div class="course-tag">
+            <span class="course-bar" aria-hidden="true"></span>
+            <div class="course-meta-text">
+              <span class="course-code-inline">${escapeHtml(item.course_code)}</span>
+              <span class="course-short-inline" dir="auto">${escapeHtml(item.course_short_name)}</span>
+            </div>
+          </div>
+          <span class="posted-pill" title="${escapeHtml(fullDate)}">${escapeHtml(shortAge)}</span>
+        </div>
+
+        <h3 class="card-title" dir="auto">${escapeHtml(item.title)}</h3>
+
+        ${bodyHtml}
+        ${extrasHtml}
+
+        <div class="card-footer-row">
+          <span class="doctor-label" dir="auto">${escapeHtml(item.doctor || 'Course Lecturer')}</span>
+          ${fullDate ? `<span class="ann-date-full">${escapeHtml(fullDate)}</span>` : ''}
+        </div>
+      </article>
+    `;
+  }
+
+  function renderDeadlinesView() {
+    els.announcementsSection.classList.add('is-hidden');
+    els.announcementsGrid.innerHTML = '';
+
+    if (state.deadlinesError) {
+      els.upcomingSection.classList.add('is-hidden');
+      els.pastSection.classList.add('is-hidden');
+      els.emptyState.classList.add('is-hidden');
+      els.errorState.classList.remove('is-hidden');
+      els.errorTitle.textContent = 'Could not load deadlines feed';
+      els.errorMessage.textContent = state.deadlinesError;
+      return;
+    }
+
+    els.errorState.classList.add('is-hidden');
     const nowMs = Date.now();
     const windowItems = getActiveWindowItems(nowMs);
     const query = state.searchQuery.trim().toLowerCase();
 
-    // Update telemetry counters (respecting active course + search filter, across full 5-day window)
+    const visibleForCounts = windowItems.filter((item) => {
+      if (!state.showPastDue && item.dueMs < nowMs) return false;
+      return matchesDeadlineSearch(item, query);
+    });
+    renderCourseChips(visibleForCounts);
+
     const courseAndQueryItems = windowItems.filter((item) => {
       if (state.selectedCourse && item.course_slug !== state.selectedCourse) return false;
-      return matchesSearch(item, query);
+      return matchesDeadlineSearch(item, query);
     });
 
     const upcomingAll = courseAndQueryItems
@@ -443,7 +659,7 @@
 
     const pastAll = courseAndQueryItems
       .filter((item) => item.dueMs < nowMs)
-      .sort((a, b) => b.dueMs - a.dueMs); // Most recently due first
+      .sort((a, b) => b.dueMs - a.dueMs);
 
     const soonCount = upcomingAll.filter((item) => item.dueMs - nowMs <= 48 * HOUR_MS).length;
 
@@ -451,39 +667,36 @@
     els.statSoon.textContent = String(soonCount);
     els.statPast.textContent = String(pastAll.length);
     els.pastDueBtnCount.textContent = String(pastAll.length);
+    els.btnExportAll.disabled = upcomingAll.length === 0;
 
-    renderCourseChips(windowItems);
-
-    // Render Upcoming Section
     if (upcomingAll.length > 0) {
       els.upcomingSection.classList.remove('is-hidden');
       els.upcomingCountBadge.textContent = `${upcomingAll.length} item${upcomingAll.length === 1 ? '' : 's'}`;
       els.upcomingGrid.innerHTML = upcomingAll
-        .map((item, idx) => renderCardHtml(item, nowMs, idx))
+        .map((item, idx) => renderDeadlineCardHtml(item, nowMs, idx))
         .join('');
     } else {
       els.upcomingSection.classList.add('is-hidden');
       els.upcomingGrid.innerHTML = '';
     }
 
-    // Render Past-Due Section (<= 5 days)
     const visiblePast = state.showPastDue ? pastAll : [];
     if (visiblePast.length > 0) {
       els.pastSection.classList.remove('is-hidden');
       els.pastCountBadge.textContent = `${visiblePast.length} item${visiblePast.length === 1 ? '' : 's'}`;
       els.pastGrid.innerHTML = visiblePast
-        .map((item, idx) => renderCardHtml(item, nowMs, idx))
+        .map((item, idx) => renderDeadlineCardHtml(item, nowMs, idx))
         .join('');
     } else {
       els.pastSection.classList.add('is-hidden');
       els.pastGrid.innerHTML = '';
     }
 
-    // Empty State
     const nothingVisible = upcomingAll.length === 0 && visiblePast.length === 0;
     const hasFilters = Boolean(state.selectedCourse || query || !state.showPastDue);
     if (nothingVisible) {
       els.emptyState.classList.remove('is-hidden');
+      els.emptyTitle.textContent = 'No matching deadlines';
       els.btnResetFilters.classList.toggle('is-hidden', !hasFilters);
       if (!state.showPastDue && pastAll.length > 0) {
         els.emptyDesc.textContent = `No upcoming deadlines match right now, and ${pastAll.length} recently past-due item${pastAll.length === 1 ? ' is' : 's are'} hidden.`;
@@ -495,79 +708,167 @@
     } else {
       els.emptyState.classList.add('is-hidden');
     }
+  }
 
+  function renderAnnouncementsView() {
+    els.upcomingSection.classList.add('is-hidden');
+    els.upcomingGrid.innerHTML = '';
+    els.pastSection.classList.add('is-hidden');
+    els.pastGrid.innerHTML = '';
+
+    if (state.announcementsError) {
+      els.announcementsSection.classList.add('is-hidden');
+      els.emptyState.classList.add('is-hidden');
+      els.errorState.classList.remove('is-hidden');
+      els.errorTitle.textContent = 'Could not load announcements feed';
+      els.errorMessage.textContent = state.announcementsError;
+      return;
+    }
+
+    els.errorState.classList.add('is-hidden');
+    const nowMs = Date.now();
+    const query = state.searchQuery.trim().toLowerCase();
+
+    const queryMatched = state.announcements.filter((item) => matchesAnnouncementSearch(item, query));
+    renderCourseChips(queryMatched);
+
+    const filtered = queryMatched
+      .filter((item) => !state.selectedCourse || item.course_slug === state.selectedCourse)
+      .sort((a, b) => (b.postedMs || 0) - (a.postedMs || 0));
+
+    const recentWeekCount = filtered.filter(
+      (item) => Number.isFinite(item.postedMs) && nowMs - item.postedMs <= WEEK_MS
+    ).length;
+    const activeCoursesCount = new Set(filtered.map((item) => item.course_slug)).size;
+
+    els.statUpcoming.textContent = String(filtered.length);
+    els.statSoon.textContent = String(recentWeekCount);
+    els.statPast.textContent = String(activeCoursesCount);
+
+    if (filtered.length > 0) {
+      els.announcementsSection.classList.remove('is-hidden');
+      els.announcementsCountBadge.textContent = `${filtered.length} post${filtered.length === 1 ? '' : 's'}`;
+      els.announcementsGrid.innerHTML = filtered
+        .map((item, idx) => renderAnnouncementCardHtml(item, idx))
+        .join('');
+      els.emptyState.classList.add('is-hidden');
+    } else {
+      els.announcementsSection.classList.add('is-hidden');
+      els.announcementsGrid.innerHTML = '';
+      const hasFilters = Boolean(state.selectedCourse || query);
+      els.emptyState.classList.remove('is-hidden');
+      els.emptyTitle.textContent = 'No matching announcements';
+      els.btnResetFilters.classList.toggle('is-hidden', !hasFilters);
+      els.emptyDesc.textContent = hasFilters
+        ? 'No lecturer announcements match the selected course or search filter.'
+        : 'No current-term lecturer announcements are currently posted.';
+    }
+  }
+
+  function renderAll() {
+    updateFeedMetaChrome();
+    if (state.activeView === 'announcements') {
+      renderAnnouncementsView();
+    } else {
+      renderDeadlinesView();
+    }
     els.btnClearSearch.classList.toggle('is-hidden', !state.searchQuery);
   }
 
-  /* Lightweight 1-second ticker that updates countdowns in-place without flickering cards */
+  /* Lightweight 1-second ticker that updates deadline countdowns in-place */
   function tickCountdowns() {
-    const nowMs = Date.now();
-    const cards = document.querySelectorAll('.deadline-card');
-    let needsStructuralReflow = false;
+    if (state.activeView === 'deadlines') {
+      const nowMs = Date.now();
+      const cards = document.querySelectorAll('.deadline-card');
+      let needsStructuralReflow = false;
 
-    for (const card of cards) {
-      const dueMs = Number(card.dataset.dueMs);
-      const wasPast = card.classList.contains('is-past');
-      const age = nowMs - dueMs;
+      for (const card of cards) {
+        const dueMs = Number(card.dataset.dueMs);
+        const wasPast = card.classList.contains('is-past');
+        const age = nowMs - dueMs;
 
-      if (age > PAST_DUE_WINDOW_MS) {
-        needsStructuralReflow = true;
-        continue;
+        if (age > PAST_DUE_WINDOW_MS) {
+          needsStructuralReflow = true;
+          continue;
+        }
+
+        const timing = describeTiming(dueMs, nowMs);
+        if (timing.isPast !== wasPast) {
+          needsStructuralReflow = true;
+          continue;
+        }
+
+        const cdEl = card.querySelector('.js-countdown');
+        if (cdEl) cdEl.textContent = timing.countdown;
+
+        const retEl = card.querySelector('.js-retention');
+        if (retEl) retEl.textContent = timing.retentionText;
+
+        const pill = card.querySelector('.urgency-pill');
+        if (pill && !pill.classList.contains(timing.urgencyClass)) {
+          pill.className = `urgency-pill ${timing.urgencyClass}`;
+          const label = pill.querySelector('.js-urgency-label');
+          if (label) label.textContent = timing.urgencyLabel;
+        }
       }
 
-      const timing = describeTiming(dueMs, nowMs);
-      if (timing.isPast !== wasPast) {
-        needsStructuralReflow = true;
-        continue;
-      }
-
-      const cdEl = card.querySelector('.js-countdown');
-      if (cdEl) cdEl.textContent = timing.countdown;
-
-      const retEl = card.querySelector('.js-retention');
-      if (retEl) retEl.textContent = timing.retentionText;
-
-      const pill = card.querySelector('.urgency-pill');
-      if (pill && !pill.classList.contains(timing.urgencyClass)) {
-        pill.className = `urgency-pill ${timing.urgencyClass}`;
-        const label = pill.querySelector('.js-urgency-label');
-        if (label) label.textContent = timing.urgencyLabel;
+      if (needsStructuralReflow) {
+        renderAll();
+        return;
       }
     }
 
-    if (needsStructuralReflow) {
-      renderAll();
-    }
-    if (state.generatedAt) {
-      els.syncText.textContent = formatRelativeSync(state.generatedAt);
+    const genAt = getActiveGeneratedAt();
+    if (genAt && !els.syncStatus.classList.contains('is-error')) {
+      els.syncText.textContent = formatRelativeUpdated(genAt);
     }
   }
 
   /* ------------------------------------------------------------------------
-     Feed Fetching
+     Feed Fetching (Deadlines + Announcements in parallel)
      ------------------------------------------------------------------------ */
+  function mergeCourses(primaryCourses, secondaryCourses) {
+    const bySlug = new Map();
+    for (const c of [...primaryCourses, ...secondaryCourses]) {
+      if (c && c.slug && !bySlug.has(c.slug)) {
+        bySlug.set(c.slug, c);
+      }
+    }
+    return Array.from(bySlug.values()).sort((a, b) => (a.accent_index || 0) - (b.accent_index || 0));
+  }
+
+  async function fetchJsonFeed(path) {
+    const cacheBuster = Math.floor(Date.now() / 60000);
+    const resp = await fetch(`${path}?t=${cacheBuster}`, { cache: 'no-store' });
+    if (!resp.ok) {
+      throw new Error(`Feed returned HTTP ${resp.status}`);
+    }
+    return resp.json();
+  }
+
   async function loadFeed() {
     els.loadingState.classList.remove('is-hidden');
     els.errorState.classList.add('is-hidden');
     els.syncStatus.classList.remove('is-error');
-    els.syncText.textContent = 'Syncing feed…';
+    els.syncText.textContent = 'Loading feed…';
 
-    try {
-      const cacheBuster = Math.floor(Date.now() / 60000);
-      const resp = await fetch(`./deadlines.json?t=${cacheBuster}`, { cache: 'no-store' });
-      if (!resp.ok) {
-        throw new Error(`Feed returned HTTP ${resp.status}`);
-      }
-      const data = await resp.json();
+    const [dlRes, annRes] = await Promise.allSettled([
+      fetchJsonFeed('./deadlines.json'),
+      fetchJsonFeed('./announcements.json'),
+    ]);
 
-      const courses = Array.isArray(data.courses) ? data.courses : [];
+    let dlCourses = [];
+    let annCourses = [];
+
+    if (dlRes.status === 'fulfilled') {
+      const data = dlRes.value || {};
+      dlCourses = Array.isArray(data.courses) ? data.courses : [];
       const rawDeadlines = Array.isArray(data.deadlines) ? data.deadlines : [];
-
-      const parsed = [];
+      const parsedDeadlines = [];
       for (const item of rawDeadlines) {
         const dueMs = Date.parse(item.due_iso);
         if (Number.isNaN(dueMs)) continue;
-        parsed.push({
+        parsedDeadlines.push({
           id: String(item.id || `${item.course_slug}-${item.title}-${item.due_iso}`),
           title: String(item.title || 'Untitled Deadline'),
           course_slug: String(item.course_slug || 'course'),
@@ -580,67 +881,127 @@
           accent_index: Number.isFinite(Number(item.accent_index)) ? Number(item.accent_index) : 0,
         });
       }
-
-      state.courses = courses;
-      state.deadlines = parsed;
-      state.generatedAt = data.generated_at || null;
-
-      els.loadingState.classList.add('is-hidden');
-      els.syncText.textContent = formatRelativeSync(state.generatedAt);
-      if (state.generatedAt) {
-        els.footerSyncMeta.textContent = `Last feed update: ${formatDueTimestamp(Date.parse(state.generatedAt))} · Retention: ${data.past_due_retention_days || 5} days past due`;
-      }
-      renderAll();
-    } catch (err) {
-      els.loadingState.classList.add('is-hidden');
-      els.upcomingSection.classList.add('is-hidden');
-      els.pastSection.classList.add('is-hidden');
-      els.emptyState.classList.add('is-hidden');
-      els.errorState.classList.remove('is-hidden');
-      els.syncStatus.classList.add('is-error');
-      els.syncText.textContent = 'Feed offline';
-      els.errorMessage.textContent = err && err.message ? err.message : 'Could not fetch deadlines.json';
+      state.deadlines = parsedDeadlines;
+      state.deadlinesGeneratedAt = data.generated_at || null;
+      state.deadlinesRetentionDays = Number(data.past_due_retention_days) || 5;
+      state.deadlinesError = null;
+    } else {
+      state.deadlinesError =
+        (dlRes.reason && dlRes.reason.message) || 'Could not fetch deadlines.json';
     }
+
+    if (annRes.status === 'fulfilled') {
+      const data = annRes.value || {};
+      annCourses = Array.isArray(data.courses) ? data.courses : [];
+      const rawAnns = Array.isArray(data.announcements) ? data.announcements : [];
+      const parsedAnns = [];
+      for (const item of rawAnns) {
+        const parsedMs = item.posted_iso ? Date.parse(item.posted_iso) : NaN;
+        parsedAnns.push({
+          id: String(item.id || `${item.course_slug}-${item.title}-${item.posted_iso || ''}`),
+          title: String(item.title || 'Course Announcement'),
+          body: String(item.body || ''),
+          course_slug: String(item.course_slug || 'course'),
+          course_code: String(item.course_code || 'COURSE'),
+          course_short_name: String(item.course_short_name || item.course_full_name || 'Course'),
+          course_full_name: String(item.course_full_name || item.course_short_name || 'Course'),
+          doctor: String(item.doctor || ''),
+          posted_iso: String(item.posted_iso || ''),
+          postedMs: Number.isNaN(parsedMs) ? NaN : parsedMs,
+          accent_index: Number.isFinite(Number(item.accent_index)) ? Number(item.accent_index) : 0,
+          links: Array.isArray(item.links) ? item.links : [],
+          attachments: Array.isArray(item.attachments) ? item.attachments : [],
+        });
+      }
+      state.announcements = parsedAnns;
+      state.announcementsGeneratedAt = data.generated_at || null;
+      state.announcementsError = null;
+    } else {
+      state.announcementsError =
+        (annRes.reason && annRes.reason.message) || 'Could not fetch announcements.json';
+    }
+
+    state.courses = mergeCourses(dlCourses, annCourses);
+    els.loadingState.classList.add('is-hidden');
+    renderAll();
   }
 
   /* ------------------------------------------------------------------------
      Event Wiring
      ------------------------------------------------------------------------ */
   function bindEvents() {
+    // Title Pull-Down Switcher
+    els.btnViewMenu.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setViewMenuOpen(!state.viewMenuOpen);
+    });
+
+    els.viewMenuList.addEventListener('click', (e) => {
+      const opt = e.target.closest('.title-dropdown-option');
+      if (!opt) return;
+      setActiveView(opt.dataset.view);
+    });
+
+    els.viewSwitcher.addEventListener('keydown', (e) => {
+      const options = Array.from(els.viewMenuList.querySelectorAll('.title-dropdown-option'));
+      if (e.key === 'Escape' && state.viewMenuOpen) {
+        e.preventDefault();
+        setViewMenuOpen(false);
+        els.btnViewMenu.focus();
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (!state.viewMenuOpen) {
+          setViewMenuOpen(true);
+          options[0]?.focus();
+        } else {
+          const idx = options.indexOf(document.activeElement);
+          options[(idx + 1) % options.length]?.focus();
+        }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (!state.viewMenuOpen) {
+          setViewMenuOpen(true);
+          options[options.length - 1]?.focus();
+        } else {
+          const idx = options.indexOf(document.activeElement);
+          options[(idx - 1 + options.length) % options.length]?.focus();
+        }
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (state.viewMenuOpen && !els.viewSwitcher.contains(e.target)) {
+        setViewMenuOpen(false);
+      }
+    });
+
+    window.addEventListener('hashchange', () => {
+      const next = parseViewFromHash();
+      if (next !== state.activeView) {
+        setActiveView(next, false);
+      }
+    });
+
     els.btnPastDue.addEventListener('click', () => {
-      playKeySound('down');
       state.showPastDue = !state.showPastDue;
       els.btnPastDue.classList.toggle('is-active', state.showPastDue);
       els.btnPastDue.setAttribute('aria-pressed', String(state.showPastDue));
       renderAll();
     });
 
-    els.btnSfx.addEventListener('click', () => {
-      const next = !state.sfxEnabled;
-      applySfxPref(next);
-      if (next) {
-        playKeySound('down');
-        showToast('Mechanical click SFX enabled');
-      } else {
-        showToast('Click SFX muted');
-      }
-    });
-
     els.btnTheme.addEventListener('click', () => {
-      playKeySound('down');
       const current = document.documentElement.getAttribute('data-theme');
       applyTheme(current === 'dark' ? 'light' : 'dark');
     });
 
     els.btnExportAll.addEventListener('click', () => {
-      playKeySound('down');
       const nowMs = Date.now();
       const query = state.searchQuery.trim().toLowerCase();
       const filteredUpcoming = getActiveWindowItems(nowMs)
         .filter((item) => {
           if (item.dueMs < nowMs) return false;
           if (state.selectedCourse && item.course_slug !== state.selectedCourse) return false;
-          return matchesSearch(item, query);
+          return matchesDeadlineSearch(item, query);
         })
         .sort((a, b) => a.dueMs - b.dueMs);
       const suffix = state.selectedCourse || 'all-courses';
@@ -653,7 +1014,6 @@
     });
 
     els.btnClearSearch.addEventListener('click', () => {
-      playKeySound('up');
       state.searchQuery = '';
       els.searchInput.value = '';
       els.searchInput.focus();
@@ -661,7 +1021,6 @@
     });
 
     els.btnResetFilters.addEventListener('click', () => {
-      playKeySound('up');
       state.selectedCourse = null;
       state.searchQuery = '';
       state.showPastDue = true;
@@ -672,7 +1031,6 @@
     });
 
     els.btnRetry.addEventListener('click', () => {
-      playKeySound('down');
       loadFeed();
     });
 
@@ -680,11 +1038,8 @@
     els.courseRack.addEventListener('click', (e) => {
       const chip = e.target.closest('.course-chip');
       if (!chip) return;
-      playKeySound('down');
       const slug = chip.dataset.course || '';
-      if (!slug) {
-        state.selectedCourse = null;
-      } else if (state.selectedCourse === slug) {
+      if (!slug || state.selectedCourse === slug) {
         state.selectedCourse = null;
       } else {
         state.selectedCourse = slug;
@@ -692,9 +1047,30 @@
       renderAll();
     });
 
+    // Announcement Read more / Show less toggle (delegated)
+    els.announcementsGrid.addEventListener('click', (e) => {
+      const btn = e.target.closest('.btn-expand-ann');
+      if (!btn) return;
+      const annId = btn.dataset.annId;
+      if (!annId) return;
+      const card = btn.closest('.announcement-card');
+      const textEl = card ? card.querySelector('.announcement-body-text') : null;
+      if (state.expandedAnnouncements.has(annId)) {
+        state.expandedAnnouncements.delete(annId);
+        if (textEl) textEl.classList.add('is-clamped');
+        btn.textContent = 'Read more';
+        btn.setAttribute('aria-expanded', 'false');
+      } else {
+        state.expandedAnnouncements.add(annId);
+        if (textEl) textEl.classList.remove('is-clamped');
+        btn.textContent = 'Show less';
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+
     // Lightweight pointer-tracking specular sheen
     document.getElementById('board-main').addEventListener('pointermove', (e) => {
-      const card = e.target.closest('.deadline-card');
+      const card = e.target.closest('.deadline-card, .announcement-card');
       if (!card) return;
       const rect = card.getBoundingClientRect();
       const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -706,6 +1082,8 @@
 
   function init() {
     loadPreferences();
+    state.activeView = parseViewFromHash();
+    syncViewChrome();
     bindEvents();
     loadFeed();
     setInterval(tickCountdowns, 1000);

@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Live public course deadlines board synced from Hermes LMS. Shows upcoming and 5-day past-due tasks with zero submission status exposure.">
+  <meta name="description" content="Live public course deadlines and lecturer announcements board auto-synced from Hermes LMS with zero submission status or grade exposure.">
   <meta name="theme-color" content="#ece9e4">
-  <title>LMS Deadlines — Course Schedule Board</title>
+  <title>Course Deadlines — LMS Board</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,25 +22,60 @@
       } catch (e) {}
     })();
   </script>
-  <link rel="stylesheet" href="./styles.css?v=4">
+  <link rel="stylesheet" href="./styles.css?v=5">
 </head>
 <body>
   <div class="chassis">
     <!-- Instrument Header -->
     <header class="header-deck">
       <div class="brand-cluster">
-        <div class="brand-badge squishy-badge" aria-hidden="true">
-          <span class="badge-led"></span>
-          <span class="badge-mono">LMS</span>
-        </div>
         <div class="brand-copy">
           <div class="eyebrow-row">
             <span class="sync-pill" id="sync-status">
               <span class="sync-dot" aria-hidden="true"></span>
-              <span id="sync-text">Syncing feed…</span>
+              <span id="sync-text">Loading feed…</span>
             </span>
           </div>
-          <h1 class="site-title">Course Deadlines</h1>
+          <h1 class="site-title">
+            <span class="site-title-prefix">Course</span>
+            <span class="title-switcher" id="view-switcher">
+              <button
+                type="button"
+                class="squishy-btn title-select-btn"
+                id="btn-view-menu"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="view-menu-list"
+              >
+                <span class="title-select-label" id="view-menu-label">Deadlines</span>
+                <svg class="title-select-chevron" viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="m5 7.5 5 5 5-5"></path>
+                </svg>
+              </button>
+              <div class="title-dropdown-tray is-hidden" id="view-menu-list" role="listbox" aria-label="Select board view">
+                <button
+                  type="button"
+                  class="squishy-btn title-dropdown-option is-active"
+                  role="option"
+                  aria-selected="true"
+                  data-view="deadlines"
+                >
+                  <span class="option-led" aria-hidden="true"></span>
+                  <span>Deadlines</span>
+                </button>
+                <button
+                  type="button"
+                  class="squishy-btn title-dropdown-option"
+                  role="option"
+                  aria-selected="false"
+                  data-view="announcements"
+                >
+                  <span class="option-led" aria-hidden="true"></span>
+                  <span>Announcements</span>
+                </button>
+              </div>
+            </span>
+          </h1>
         </div>
       </div>
 
@@ -61,23 +96,12 @@
         <button
           type="button"
           class="squishy-btn toolbar-btn"
-          id="btn-sfx"
-          aria-pressed="false"
-          title="Toggle synthesized mechanical keycap click sound"
-        >
-          <span class="btn-led btn-led-sfx" aria-hidden="true"></span>
-          <span class="btn-label">Click SFX</span>
-        </button>
-
-        <button
-          type="button"
-          class="squishy-btn toolbar-btn"
           id="btn-theme"
           aria-pressed="false"
-          title="Switch between Warm Stone and Charcoal PBT keycaps"
+          title="Switch between Light Mode and Dark Mode"
         >
           <span class="btn-icon" id="theme-icon" aria-hidden="true">◐</span>
-          <span class="btn-label" id="theme-label">Dark PBT</span>
+          <span class="btn-label" id="theme-label">Dark Mode</span>
         </button>
 
         <button
@@ -93,33 +117,33 @@
     </header>
 
     <!-- Telemetry Counter Strip + Search Well -->
-    <section class="instrument-bay" aria-label="Deadline summary and search">
+    <section class="instrument-bay" aria-label="Board summary and search">
       <div class="telemetry-strip">
         <div class="telemetry-module">
-          <span class="telemetry-label">UPCOMING</span>
+          <span class="telemetry-label" id="stat-label-1">UPCOMING</span>
           <div class="lcd-well">
             <span class="lcd-value" id="stat-upcoming">0</span>
-            <span class="lcd-sub">active</span>
+            <span class="lcd-sub" id="stat-sub-1">active</span>
           </div>
         </div>
         <div class="telemetry-module">
-          <span class="telemetry-label">DUE ≤ 48H</span>
-          <div class="lcd-well lcd-well-warn">
+          <span class="telemetry-label" id="stat-label-2">DUE ≤ 48H</span>
+          <div class="lcd-well lcd-well-warn" id="stat-well-2">
             <span class="lcd-value" id="stat-soon">0</span>
-            <span class="lcd-sub">priority</span>
+            <span class="lcd-sub" id="stat-sub-2">priority</span>
           </div>
         </div>
         <div class="telemetry-module">
-          <span class="telemetry-label">PAST DUE ≤ 5D</span>
+          <span class="telemetry-label" id="stat-label-3">PAST DUE ≤ 5D</span>
           <div class="lcd-well lcd-well-muted">
             <span class="lcd-value" id="stat-past">0</span>
-            <span class="lcd-sub">retained</span>
+            <span class="lcd-sub" id="stat-sub-3">retained</span>
           </div>
         </div>
       </div>
 
       <div class="search-tray">
-        <label class="sr-only" for="search-input">Filter deadlines by title, course, or instructor</label>
+        <label class="sr-only" for="search-input" id="search-label">Filter deadlines by title, course, or instructor</label>
         <div class="search-well">
           <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="11" cy="11" r="8"></circle>
@@ -150,12 +174,12 @@
       <div class="section-cap-bar">
         <span class="section-label">FILTER</span>
       </div>
-      <div class="course-rack" id="course-rack" role="group" aria-label="Filter deadlines by course">
+      <div class="course-rack" id="course-rack" role="group" aria-label="Filter items by course">
         <!-- Populated dynamically by app.js -->
       </div>
     </section>
 
-    <!-- Main Deadlines Feed -->
+    <!-- Main Board Feed -->
     <main class="board-main" id="board-main">
       <!-- Loading skeleton -->
       <div class="skeleton-grid" id="loading-state" aria-live="polite">
@@ -166,7 +190,7 @@
 
       <!-- Error state -->
       <div class="empty-well is-hidden" id="error-state" role="alert">
-        <div class="empty-title">Could not load deadlines feed</div>
+        <div class="empty-title" id="error-title">Could not load feed</div>
         <p class="empty-desc" id="error-message">Please retry in a moment.</p>
         <button type="button" class="squishy-btn" id="btn-retry">Retry Feed</button>
       </div>
@@ -196,9 +220,21 @@
         <div class="cards-grid cards-grid-past" id="past-grid"></div>
       </section>
 
+      <!-- Lecturer Announcements Section -->
+      <section class="feed-section is-hidden" id="announcements-section" aria-labelledby="announcements-heading">
+        <div class="feed-header">
+          <h2 class="feed-heading" id="announcements-heading">
+            <span class="heading-led heading-led-ann" aria-hidden="true"></span>
+            Lecturer Announcements
+          </h2>
+          <span class="feed-badge" id="announcements-count-badge">0 posts</span>
+        </div>
+        <div class="announcements-grid" id="announcements-grid"></div>
+      </section>
+
       <!-- Empty Filter Result State -->
       <div class="empty-well is-hidden" id="empty-state">
-        <div class="empty-title">No matching deadlines</div>
+        <div class="empty-title" id="empty-title">No matching deadlines</div>
         <p class="empty-desc" id="empty-desc">All upcoming and 5-day past-due items are clear for this selection.</p>
         <button type="button" class="squishy-btn is-hidden" id="btn-reset-filters">Reset Filters</button>
       </div>
@@ -212,9 +248,6 @@
     </footer>
   </div>
 
-  <!-- Subtle live toast notification -->
-  <div class="toast-keycap" id="toast" role="status" aria-live="polite"></div>
-
-  <script src="./app.js?v=3" defer></script>
+  <script src="./app.js?v=4" defer></script>
 </body>
 </html>

@@ -1,0 +1,370 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-26T15:22:39Z",
+  "courses": [
+    {
+      "slug": "601-csc",
+      "code": "601 CSC",
+      "short_name": "أساسيات الذكاء الاصطناعي",
+      "section": "231",
+      "full_name": "أساسيات الذكاء الاصطناعي 601 CSC_شعبة(231)نظري",
+      "doctor": "د. عماد الحربي",
+      "accent_index": 0
+    },
+    {
+      "slug": "602-csc",
+      "code": "602 CSC",
+      "short_name": "الرياضيات الحاسوبية",
+      "section": "227",
+      "full_name": "الرياضيات الحاسوبية 602 CSC_شعبة(227)نظري",
+      "doctor": "د. محمد زيشان عالم",
+      "accent_index": 1
+    },
+    {
+      "slug": "605-csc",
+      "code": "605 CSC",
+      "short_name": "البرمجة المتقدمة وإطارات برمجة",
+      "section": "228",
+      "full_name": "البرمجة المتقدمة وإطارات برمجة 605 CSC_شعبة(228)نظري",
+      "doctor": "د. أحمد مباركي",
+      "accent_index": 2
+    },
+    {
+      "slug": "608-csc",
+      "code": "608 CSC",
+      "short_name": "طرق بحث",
+      "section": "229",
+      "full_name": "طرق بحث 608 CSC_شعبة(229)نظري",
+      "doctor": "د. محمد الوكيل",
+      "accent_index": 3
+    }
+  ],
+  "announcements": [
+    {
+      "id": "e129484c2edb",
+      "title": "Important Guidelines for Paper 4 – Review Paper and Presentation",
+      "body": "Dear Students,\n\nFor those preparing a Review Paper for Paper 4, please pay attention to the following points when preparing your final paper and PowerPoint presentation.\n\n1. Review Methodology Section\n\nYour Review Methodology should clearly explain:\n\n- Search Sources: Which databases you used to find relevant papers.\n\n- Search Keywords: Which keywords or search terms you used.\n\n- Selection Criteria: How you decided which papers to include or exclude.\n\n- Selection Process: How many papers you found, screened, excluded, and finally selected.\n\n- Data Extraction: What information you collected from each paper.\n\n- Literature Synthesis: How you organized, compared, and analyzed the selected studies.\nDescribe what you actually did. Do not invent search results or selection numbers. If you use the term Systematic Review , your methodology must clearly support that description.\n\n2. PowerPoint Presentation\n\nPlease make sure your presentation:\n\n- Includes a slide explaining your review methodology and paper selection process.\n\n- Clearly presents the research problem and research questions/objectives.\n\n- Compares the selected studies instead of only summarizing them individually.\n\n- Uses clear tables or figures to highlight important findings.\n\n- Explains how the findings address your research questions.\n\n- Includes the main conclusions, limitations, and future work.\n\n- Provides appropriate citations and references.\nRemember: The main objective of Paper 4 is to demonstrate your understanding of how to structure and write a research paper. Focus on clarity, organization, proper referencing, and meaningful discussion of the findings.\n\nBest regards,\n\nProf. Mohammed Alwakeel",
+      "course_slug": "608-csc",
+      "course_code": "608 CSC",
+      "course_short_name": "طرق بحث",
+      "course_full_name": "طرق بحث 608 CSC_شعبة(229)نظري",
+      "doctor": "د. محمد الوكيل",
+      "posted_iso": "2026-11-18T14:26:29Z",
+      "accent_index": 3,
+      "links": [],
+      "attachments": []
+    },
+    {
+      "id": "9ccba598da5f",
+      "title": "Extension of Paper 4 Deadline and Presentation Schedule",
+      "body": "Dear Students,\n\nPlease be informed that the deadline for submitting Paper 4 and its PowerPoint presentation has been extended to Thursday, December 3, 2026 before 10:00 PM.\n\nAdditionally, all students who have already submitted their reports for Papers 1–3 but have not yet presented and discussed them in class are required to attend the upcoming presentation sessions on Wednesday, November 18, and Wednesday, December 2, 2026, fully prepared to deliver their presentations.\n\nEach student will be allocated 15 minutes for their presentation and discussion.\n\nPlease ensure your attendance on both dates and come fully prepared.\n\nBest regards,",
+      "course_slug": "608-csc",
+      "course_code": "608 CSC",
+      "course_short_name": "طرق بحث",
+      "course_full_name": "طرق بحث 608 CSC_شعبة(229)نظري",
+      "doctor": "د. محمد الوكيل",
+      "posted_iso": "2026-11-13T03:44:56Z",
+      "accent_index": 3,
+      "links": [],
+      "attachments": []
+    },
+    {
+      "id": "e370a25768e8",
+      "title": "إعلان هام بشأن الالتزام بالزي الوطني للطلبة السعوديين FOR SAUDI STUDENTS ONLY",
+      "body": "السلام عليكم و رحمة الله و بركاته\n\nحسب ما ورد من تعليمات مشددة جدا للجامعة و للإدارة العليا للجامعة فلن يسمح لاي طالب سعودي بحضور المحاضرة بدون ارتداء الزي الوطني كاملا بما فيه الشماغ او الغترة، و عليه اعتبار من هذه اللحظة اعتذر عن السماح لاي طالب بدخول المحاضرة بدون ارتداء الزي الوطني\n\nامل من الجميع الالتزام بالتعليمات",
+      "course_slug": "608-csc",
+      "course_code": "608 CSC",
+      "course_short_name": "طرق بحث",
+      "course_full_name": "طرق بحث 608 CSC_شعبة(229)نظري",
+      "doctor": "د. محمد الوكيل",
+      "posted_iso": "2026-11-11T07:55:51Z",
+      "accent_index": 3,
+      "links": [],
+      "attachments": []
+    },
+    {
+      "id": "4f8340fe3b27",
+      "title": "TO REMIND YOU : Important Announcement: Course Evaluation Survey",
+      "body": "REMINDER, UP TO THIS MOMENT ONLY 6 OF YOU FILLED THE SURVEY.\n\nTRY TO FILL THE SURVEY BEFORE THE DEADLINE THIS IS VERY IMPORTANT.\n\nTHANK YOU\n\nAssalamu Alaikum Wa Rahmatu ALLAH Wa Barakatuh,\n\n(Please share this announcement in the course group.)\n\nDear Students,\n\nI kindly ask all students to access the following link and complete the Course Evaluation Survey , as it is very important. Please note that the deadline for completing the survey is the end of the working day on Thursday of this week .\n\nhttps://gate.ut.edu.sa/MieyarV2/Surveys/\n\nI strongly encourage everyone to complete the survey, as it will take only 3 minutes of your time.\n\nPlease note that completing the survey will be considered part of your course participation .\n\nThank you for your cooperation.\n\n(فضلا نشر هذا الاعلان في قروب المقرر)\n\nآمل من الجميع الدخول على الرابط التالي و تعبئة الاستبيان الخاص بالمقرر للاهمية علما بأنه يجب الانتهاء من تعبئة الاستبيان بحد أقصى نهاية دوام يوم الخميس هذا الاسبوع\n\nhttps://gate.ut.edu.sa/MieyarV2/Surveys/\n\nآمل من الجميع الحرص على تعبئة الاستبيان الخاص بالمقرر، علما بأن الاستبيان لن يستغرق منك سوى 3 دقائق و تعبئة الاستبيان تعتبر من ضمن مشاركتك في المقرر.",
+      "course_slug": "608-csc",
+      "course_code": "608 CSC",
+      "course_short_name": "طرق بحث",
+      "course_full_name": "طرق بحث 608 CSC_شعبة(229)نظري",
+      "doctor": "د. محمد الوكيل",
+      "posted_iso": "2026-11-08T04:13:27Z",
+      "accent_index": 3,
+      "links": [
+        {
+          "title": "gate.ut.edu.sa",
+          "url": "https://gate.ut.edu.sa/MieyarV2/Surveys/"
+        }
+      ],
+      "attachments": []
+    },
+    {
+      "id": "1533f7943f20",
+      "title": "Reminder: Submission of Papers 2 and 3 Reports",
+      "body": "Dear All,\n\nThis is a reminder to submit your reports for Papers 2 and 3 before the specified deadline.\n\nPlease remember that each report, along with all its required attachments, must be submitted as a single ZIP file.\n\nTherefore, I expect to receive two separate ZIP files from each student:\n\n● Paper 2: One ZIP file containing the report and all required attachments.\n\n● Paper 3: One ZIP file containing the report and all required attachments.\n\nPlease ensure that you carefully follow all the instructions and guidelines previously provided to avoid losing marks due to incomplete or incorrect submissions.\n\nBest regards,\n\nMohammed Alwakeel",
+      "course_slug": "608-csc",
+      "course_code": "608 CSC",
+      "course_short_name": "طرق بحث",
+      "course_full_name": "طرق بحث 608 CSC_شعبة(229)نظري",
+      "doctor": "د. محمد الوكيل",
+      "posted_iso": "2026-11-07T12:20:01Z",
+      "accent_index": 3,
+      "links": [],
+      "attachments": []
+    },
+    {
+      "id": "68c337abe449",
+      "title": "Paper 1 Grades",
+      "body": "Dear All,\n\nThe grades for Paper #1 are now available on Blackboard. Please be prepared to present your work tomorrow.\n\nGood luck!\n\nMohammed Alwakeel",
+      "course_slug": "608-csc",
+      "course_code": "608 CSC",
+      "course_short_name": "طرق بحث",
+      "course_full_name": "طرق بحث 608 CSC_شعبة(229)نظري",
+      "doctor": "د. محمد الوكيل",
+      "posted_iso": "2026-11-03T16:42:44Z",
+      "accent_index": 3,
+      "links": [],
+      "attachments": []
+    },
+    {
+      "id": "9922c2d86aa0",
+      "title": "Important Notice Regarding Grade Distribution and Research Submission Quality",
+      "body": "Dear Students,\n\nAs stated in the official course specification shared with you on Blackboard at the beginning of the semester , the grade distribution for CSC 608 – Research Methods is as follows:\n\nGrade Distribution:\n\n- Paper 1: 15 marks (Published Research Paper, Written Report, and PowerPoint Presentation).\n\n- Paper 2: 15 marks (Published Research Paper, Written Report, and PowerPoint Presentation).\n\n- Paper 3: 15 marks (Published Research Paper, Written Report, and PowerPoint Presentation).\n\n- Paper 4 – Final Research Paper: 30 marks.\n\n- Paper 4 – PowerPoint Presentation: 15 marks.\n\n- Class Participation Throughout the Semester: 10 marks.\nTotal: 100 marks.\n\nImportant Reminder Regarding Submission Quality and Academic Expectations\n\nI strongly urge all students to take these assessment requirements seriously and make every effort to avoid losing marks unnecessarily.\n\nAfter reviewing some of the submissions received for Paper 1, I noticed that a small number of students submitted work that clearly indicates they had not carefully read or followed the research guidelines document and the previous email instructions.\n\nThe quality, completeness, and academic standard of these submissions fall significantly below what is expected and required at the master's level .\n\nPlease understand that failure to follow the specified instructions, incomplete submissions, and work that does not meet the required academic standards will directly affect the marks awarded for the corresponding assessment.\n\nI would therefore like to emphasize that every student is expected to carefully read and follow the CSC608_Student_Research_Work_Guidelines.pdf document, along with all previous announcements and instructions sent through Blackboard.\n\nYour written reports must demonstrate a genuine understanding and critical evaluation of the selected research papers. Simply copying information or providing a superficial summary is not sufficient. Likewise, your presentations must be complete, well-organized, and academically appropriate.\n\nSubmitting the required files does not automatically entitle a student to full marks. The marks awarded will depend on the quality, completeness, academic content, and compliance with the specified requirements.\n\nI also remind you that 10 marks are allocated to class participation throughout the semester , and students are expected to participate actively and be prepared to discuss their research work when requested.\n\nI strongly encourage everyone to review the guidelines and previous instructions carefully before making any further submissions. Please take the necessary steps to improve the quality of your work and avoid losing marks that could otherwise be earned.\n\nI expect all students to demonstrate the level of academic effort, critical thinking, and professionalism appropriate for a master's degree program.\n\nBest regards,\n\nProf. Mohammed Alwakeel",
+      "course_slug": "608-csc",
+      "course_code": "608 CSC",
+      "course_short_name": "طرق بحث",
+      "course_full_name": "طرق بحث 608 CSC_شعبة(229)نظري",
+      "doctor": "د. محمد الوكيل",
+      "posted_iso": "2026-11-03T08:25:42Z",
+      "accent_index": 3,
+      "links": [],
+      "attachments": []
+    },
+    {
+      "id": "525b53bf36f2",
+      "title": "Important Instructions for All Future Submissions (ZIP Files and Required Formats)",
+      "body": "Dear Students,\n\nIMPORTANT: Please read this entire message carefully and make sure you fully understand and follow all the instructions below.\n\nFirst, I would like to confirm that the files you have already submitted have been received. There is no need to resend any previously submitted files. The following instructions apply only to new submissions from now on .\n\nHowever, I have noticed some issues with the formats and organization of previously submitted files. To avoid these problems in future submissions, all students must strictly follow the requirements below.\n\n1. Mandatory ZIP File for All Future Submissions\n\nEffective immediately, whenever you submit multiple files through Blackboard Messages, you must:\n\n- Place ALL required files into ONE compressed ZIP (.zip) file .\n\n- Send only ONE ZIP file as an attachment to your Blackboard message.\n\n- Do NOT send files as separate attachments or in multiple messages.\n\n- Before sending, verify that the ZIP file opens correctly, is not corrupted, and contains all the required files.\n\n- Do NOT password-protect or encrypt the ZIP file. It must be accessible without requiring any password.\n\n- Make sure that all files inside the ZIP archive are complete, correctly named, and in the required formats.\nThese instructions are mandatory for all future submissions and must be followed without exception.\n\n2. Required File Formats – Important Clarification\n\nPlease carefully reread the previous announcement regarding the research work requirements for Weeks 11–15.\n\nI have noticed that some students submitted only Word documents without the required PDF versions. Others submitted only PowerPoint presentations without including the PDF versions of the same presentations.\n\nTo avoid any further confusion, the required file formats are as follows:\n\n- Written Reports and Research Papers: PDF (.pdf) only.\n\n- Presentations: Each presentation must be submitted in TWO separate formats :\n\n- PowerPoint (.pptx).\n\n- PDF (.pdf) version of the same presentation.\n\n- Selected Published Journal Articles (Papers 1–3): PDF (.pdf) only.\nIMPORTANT: Submitting a PowerPoint file without its corresponding PDF version is incomplete. Likewise, submitting a Word document instead of the required PDF does not meet the submission requirements.\n\nAll required files must be included in the same ZIP archive.\n\n3. Submission Through Blackboard Messages\n\nAll future submissions must follow these steps:\n\n- Prepare all the required files in the correct formats.\n\n- Place all files into ONE ZIP archive .\n\n- Verify that the ZIP file opens correctly, contains all required files, and is not password-protected.\n\n- Send the ZIP file to me as an attachment using the Messages feature in Blackboard , not the Assignment Submission feature.\n\n- IMPORTANT: Make sure to check the “Send an email copy to recipients” option before sending your message. This step is mandatory.\n\n- Complete your submission before the deadline specified for the corresponding week.\n4. Student Responsibility and Compliance\n\nEach student is personally responsible for:\n\n- Carefully reading and following the previous announcement and the instructions in this email.\n\n- Submitting ALL required files , not just some of them.\n\n- Ensuring that every file is provided in the correct format.\n\n- Checking that the ZIP archive is complete, accessible, and free from errors.\n\n- Ensuring that the ZIP file is not password-protected.\n\n- Following the correct Blackboard Messages submission procedure.\n\n- Meeting the announced submission deadlines.\nIncomplete submissions, missing files, incorrect file formats, corrupted ZIP archives, or password-protected ZIP files will not be considered valid reasons for extending submission deadlines.\n\n5. Important Reminder Regarding Previous Submissions\n\nTo avoid any misunderstanding:\n\n- All files previously sent have been received.\n\n- You do NOT need to resend any files that you have already submitted.\n\n- The new ZIP file requirement applies ONLY to future submissions.\n\n- The purpose of this announcement is to ensure that all upcoming submissions are complete, properly formatted, and correctly organized.\nPlease take these instructions seriously and ensure full compliance with all requirements for future submissions.\n\nThank you for your cooperation.\n\nBest regards,\n\nProf. Mohammed Alwakeel",
+      "course_slug": "608-csc",
+      "course_code": "608 CSC",
+      "course_short_name": "طرق بحث",
+      "course_full_name": "طرق بحث 608 CSC_شعبة(229)نظري",
+      "doctor": "د. محمد الوكيل",
+      "posted_iso": "2026-11-03T07:59:21Z",
+      "accent_index": 3,
+      "links": [],
+      "attachments": []
+    },
+    {
+      "id": "f945dbec216e",
+      "title": "Research Submissions, Deadlines, and Class Requirements (Weeks 11–15)",
+      "body": "Dear Students\n\nAs outlined in the CSC608_Student_Research_Work_Guidelines.pdf document available on Blackboard, please carefully review the following requirements, submission deadlines, and planned class activities from Week 11 (Current Week) through Week 15.\n\nWeek 11 (Current Week) – Paper 1\n\nEach student must submit the following for Paper 1:\n\n1.  Written Report (PDF).\n\n2.  Presentation (both PowerPoint and PDF formats).\n\n3.  PDF copy of the selected published journal paper.\n\nSubmission Deadline: Monday of Week 11 (Current Week), no later than 10:00 PM.\n\nDuring the class in Week 11 (Current Week), selected students will be asked to present and discuss their submitted work. All students must be prepared to explain their papers and answer questions.\n\nWeek 12 (Next Week) – Papers 2 and 3\n\nEach student must submit the following for each of Paper 2 and Paper 3 :\n\n1.  Written Report (PDF).\n\n2.  Presentation (both PowerPoint and PDF formats).\n\n3.  PDF copy of the selected published journal paper.\n\nSubmission Deadline: Monday of Week 12, no later than 10:00 PM.\n\nDuring the Week 12 class, selected students will be asked to present and discuss their submitted work. All students must be prepared to explain and answer questions about both papers.\n\nWeek 13 – Paper 4 Discussion and Guidance\n\nThe Week 13 class will be dedicated to discussing any questions, concerns, or points requiring clarification to help students complete the preparation of Paper 4 (Your Own Research Paper).\n\nEach student should come prepared with any questions related to their research topic, research problem, objectives, methodology, literature review, paper structure, or other aspects of Paper 4.\n\nNo formal submission is required for Week 13.\n\nWeek 14 – Paper 4 Draft Submission\n\nEach student must submit:\n\n1.  Draft Research Paper (PDF).\n\n2.  Draft Presentation (both PowerPoint and PDF formats).\n\nSubmission Deadline: Monday of Week 14, no later than 10:00 PM.\n\nDuring the Week 14 class, selected research paper drafts will be presented and discussed. Feedback will focus on the research problem, objectives, literature review, methodology, findings, discussion, and overall quality of the research paper.\n\nWeek 15 – Paper 4 Final Submission\n\nEach student must submit:\n\n1.  Final Research Paper (PDF).\n\n2.  Final Presentation (both PowerPoint and PDF formats).\n\nSubmission Deadline: Monday of Week 15, no later than 10:00 PM.\n\nDuring the Week 15 class, selected students will be asked to present and discuss their final research papers. All students must be prepared to explain and defend their work.\n\nImportant Submission and USB Flash Drive Requirements\n\nPlease pay careful attention to the following mandatory requirements:\n\n1. Submission via Blackboard Email\n\n·     All required files must be sent directly to me as email attachments through the Blackboard email system by the specified deadline for the corresponding week.\n\n·     Do not upload your files through the Blackboard Assignment Submission feature. All required files must be sent directly to me as attachments using the Messages feature in Blackboard. IMPORTANT: When sending your message, make sure to check the “Send an email copy to recipients” option. This step is mandatory and must not be overlooked.\n\n·     All written reports, research papers, and copies of published journal articles must be submitted in PDF format.\n\n·     All presentations must be submitted in both PowerPoint (.pptx) and PDF (.pdf) formats.\n\n·     Students are responsible for ensuring that all required files are correctly attached to their emails before sending.\n\n·     Late submissions will not be accepted.\n\n2. Mandatory USB Flash Drive for Class\n\nIn addition to sending the required files by email through Blackboard, every student must bring a USB flash drive containing all the required files for the corresponding week to that week’s scheduled class session (Week 11 (Current Week), Week 12, Week 14, and Week 15).\n\n·     The USB flash drive must contain copies of all files required for that week’s submission.\n\n·     All written reports, research papers, and published articles must be available in PDF format.\n\n·     All presentation files must be available in both PowerPoint and PDF formats.\n\n·     Students must be ready to transfer their files from the USB flash drive to my computer and present their work during class if requested.\n\n·     All files must be properly organized, accessible, and ready for immediate use during the class.\n\n·     This requirement applies to every student, regardless of whether they are selected to present.\n\n3. General Requirements\n\n·     Sending the required files by email through Blackboard and bringing the same files on a USB flash drive are two separate mandatory requirements. Completing one does not replace the other.\n\n·     Every student is responsible for ensuring that all required files are complete, correctly formatted, and submitted on time.\n\n·     All students must be prepared to present and discuss their work, even if they are not selected to do so.\n\n·     All work must comply with the requirements specified in the guidelines document available on Blackboard.\n\nImportant: All submissions must be sent to me by email through Blackboard, and the required files must also be brought on a USB flash drive to the corresponding class session.\n\nPlease plan your work carefully, meet all deadlines, and come fully prepared for each class.\n\nBest regards,\n\nMohammed Alwakeel\n\nUniversity of Tabuk",
+      "course_slug": "608-csc",
+      "course_code": "608 CSC",
+      "course_short_name": "طرق بحث",
+      "course_full_name": "طرق بحث 608 CSC_شعبة(229)نظري",
+      "doctor": "د. محمد الوكيل",
+      "posted_iso": "2026-11-01T10:33:31Z",
+      "accent_index": 3,
+      "links": [],
+      "attachments": []
+    },
+    {
+      "id": "f6e528f5bb36",
+      "title": "Pandas topics assignments",
+      "body": "Dear students,\n\nPlease find attached the file assigning each student a topic from the Pandas library. Review your assigned topic and prepare to explain it in our next lecture .\n\nYour explanation should introduce the topic, describe the main commands, and include a practical Python example.\n\nBest wishes.\n\nPandas_Topic_Assignments_Masters (1).xlsx",
+      "course_slug": "605-csc",
+      "course_code": "605 CSC",
+      "course_short_name": "البرمجة المتقدمة وإطارات برمجة",
+      "course_full_name": "البرمجة المتقدمة وإطارات برمجة 605 CSC_شعبة(228)نظري",
+      "doctor": "د. أحمد مباركي",
+      "posted_iso": "2026-11-01T07:52:37Z",
+      "accent_index": 2,
+      "links": [],
+      "attachments": [
+        "Pandas_Topic_Assignments_Masters (1).xlsx"
+      ]
+    },
+    {
+      "id": "0f13437285c3",
+      "title": "Today's Lecture Postponed to Next Week",
+      "body": "Dear All,\n\nI’m not feeling well today, so unfortunately, I won’t be able to give today’s lecture. We will reschedule it for next week.\n\n.Thank you for your understanding.",
+      "course_slug": "608-csc",
+      "course_code": "608 CSC",
+      "course_short_name": "طرق بحث",
+      "course_full_name": "طرق بحث 608 CSC_شعبة(229)نظري",
+      "doctor": "د. محمد الوكيل",
+      "posted_iso": "2026-10-28T05:12:19Z",
+      "accent_index": 3,
+      "links": [],
+      "attachments": []
+    },
+    {
+      "id": "f38c880648ae",
+      "title": "paper Ideas",
+      "body": "Dear Students,\n\nIn today's class we will go over the exam solution and marks discussion. Another important topic of discussion will be the review paper, please come up with your topic and discuss with me today in class. we need to lock your ideas and start working towards the paper.",
+      "course_slug": "602-csc",
+      "course_code": "602 CSC",
+      "course_short_name": "الرياضيات الحاسوبية",
+      "course_full_name": "الرياضيات الحاسوبية 602 CSC_شعبة(227)نظري",
+      "doctor": "د. محمد زيشان عالم",
+      "posted_iso": "2026-10-26T07:07:24Z",
+      "accent_index": 1,
+      "links": [],
+      "attachments": []
+    },
+    {
+      "id": "38d08145d687",
+      "title": "Lectures from this week to the end of the semester",
+      "body": "Assalamu Alaykum\n\nStarting this week and continuing until the end of the semester, we will dedicate our lectures to discussing your work and progress.\n\nThe remaining materials on Blackboard that we have not covered in class will be assigned for self-study. These materials provide useful tips and guidance to help you complete your four papers.\n\nPlease keep the following deadlines in mind:\n\n- Week 11: Submit the report for the first paper.\n\n- Week 12: Submit the reports for the second and third papers.\n\n- Week 14: Submit and present the fourth paper.\nPlease make sure to meet these deadlines and come prepared to discuss your progress during our lectures.",
+      "course_slug": "608-csc",
+      "course_code": "608 CSC",
+      "course_short_name": "طرق بحث",
+      "course_full_name": "طرق بحث 608 CSC_شعبة(229)نظري",
+      "doctor": "د. محمد الوكيل",
+      "posted_iso": "2026-10-24T03:17:47Z",
+      "accent_index": 3,
+      "links": [],
+      "attachments": []
+    },
+    {
+      "id": "16654d164411",
+      "title": "No class this week because of the MidExams",
+      "body": "There will be no class this week because of the midterm exams",
+      "course_slug": "608-csc",
+      "course_code": "608 CSC",
+      "course_short_name": "طرق بحث",
+      "course_full_name": "طرق بحث 608 CSC_شعبة(229)نظري",
+      "doctor": "د. محمد الوكيل",
+      "posted_iso": "2026-10-19T12:22:16Z",
+      "accent_index": 3,
+      "links": [],
+      "attachments": []
+    },
+    {
+      "id": "05a6ca594ccb",
+      "title": "Mid-term and Quiz",
+      "body": "Hi All,\n\nI got the final date for the mid-term from the CS department.  It will be on Wednesday 21/10/2026, 5:00-6:00 pm lecture room 14-1-4-1. We will have our Quiz and revision class 12/10/2026.\n\nZeshan",
+      "course_slug": "602-csc",
+      "course_code": "602 CSC",
+      "course_short_name": "الرياضيات الحاسوبية",
+      "course_full_name": "الرياضيات الحاسوبية 602 CSC_شعبة(227)نظري",
+      "doctor": "د. محمد زيشان عالم",
+      "posted_iso": "2026-10-11T07:07:04Z",
+      "accent_index": 1,
+      "links": [],
+      "attachments": []
+    },
+    {
+      "id": "261d771b0227",
+      "title": "Important Announcement Regarding the Midterm Exam",
+      "body": "This is a reminder regarding the midterm exam scheduled for next Saturday, from 1:00 PM to 3:00 PM, in the same lecture lab; the exam will be practical.\n\nThere will be no lectures this week due to the exam; we will resume lectures on Tuesday, October 20th.\n\nSince department regulations require a unified exam, the test will cover only the \"Introduction\" topics, as other sections have not yet covered the \"NumPy\" topic.\n\nGood luck to everyone. Please send any inquiries to me via email.",
+      "course_slug": "605-csc",
+      "course_code": "605 CSC",
+      "course_short_name": "البرمجة المتقدمة وإطارات برمجة",
+      "course_full_name": "البرمجة المتقدمة وإطارات برمجة 605 CSC_شعبة(228)نظري",
+      "doctor": "د. أحمد مباركي",
+      "posted_iso": "2026-10-10T08:47:28Z",
+      "accent_index": 2,
+      "links": [],
+      "attachments": []
+    },
+    {
+      "id": "bec568b1c84e",
+      "title": "Mock Exam",
+      "body": "A practice test covering Python basics and the NumPy library has been uploaded to Blackboard. This test is not necessarily similar to the midterm exam questions; rather, it serves as practice for the question format.",
+      "course_slug": "605-csc",
+      "course_code": "605 CSC",
+      "course_short_name": "البرمجة المتقدمة وإطارات برمجة",
+      "course_full_name": "البرمجة المتقدمة وإطارات برمجة 605 CSC_شعبة(228)نظري",
+      "doctor": "د. أحمد مباركي",
+      "posted_iso": "2026-10-07T07:01:55Z",
+      "accent_index": 2,
+      "links": [],
+      "attachments": []
+    },
+    {
+      "id": "5c596293ff6b",
+      "title": "Attendance",
+      "body": "Hi Folks,\n\nIn every class, I will call the attendance in the beginning of the class only once to avoid wasting class time. Due to my lack of awareness of Arabic names I will call the last two digits of your student ID/ roll number. Please make sure you respond with a verbal answer of either yes, present or mojood. Please be aware the attendance will be called only Once. I will highly appreciate your cooperation.",
+      "course_slug": "602-csc",
+      "course_code": "602 CSC",
+      "course_short_name": "الرياضيات الحاسوبية",
+      "course_full_name": "الرياضيات الحاسوبية 602 CSC_شعبة(227)نظري",
+      "doctor": "د. محمد زيشان عالم",
+      "posted_iso": "2026-09-08T05:43:21Z",
+      "accent_index": 1,
+      "links": [],
+      "attachments": []
+    },
+    {
+      "id": "cf87b6247300",
+      "title": "تغيير قاعة المحاضرات",
+      "body": "السلام عليكم و رحمة الله و بركاته\n\nتم تخصيص القاعة ١٨-٢-٤-١ للشعبة لذلك ستكون محاضراتنا في هذه القاعة\n\nفضلا نشر الرسالة في القروب الخاص بكم حتى تصل لجميع الزملاء",
+      "course_slug": "608-csc",
+      "course_code": "608 CSC",
+      "course_short_name": "طرق بحث",
+      "course_full_name": "طرق بحث 608 CSC_شعبة(229)نظري",
+      "doctor": "د. محمد الوكيل",
+      "posted_iso": "2026-09-02T09:39:14Z",
+      "accent_index": 3,
+      "links": [],
+      "attachments": []
+    },
+    {
+      "id": "409af634f895",
+      "title": "قاعة المحاضرات",
+      "body": "المحاضرات ستكون في نفس القاعة التي حضرنا بها الأسبوع الماضي بالدور الثاني (اظن رقمها ١٦-٤-١ لست متاكد من رقمها ١٠٠٪؜)",
+      "course_slug": "608-csc",
+      "course_code": "608 CSC",
+      "course_short_name": "طرق بحث",
+      "course_full_name": "طرق بحث 608 CSC_شعبة(229)نظري",
+      "doctor": "د. محمد الوكيل",
+      "posted_iso": "2026-09-01T18:04:38Z",
+      "accent_index": 3,
+      "links": [],
+      "attachments": []
+    },
+    {
+      "id": "0060456e7faa",
+      "title": "اعلان هام بخصوص الحضور و تقديم اعذار الغياب",
+      "body": "وفقاً للقاعدة التنفيذية للمادة الرابعة عشرة والمادة الخامسة عشرة من لائحة الدراسة والاختبارات للمرحلة الجامعية والقواعد التنفيذية المعتمدة بجامعة تبوك الفقرة سبعة ( في حال تغيب الطالب لعذر ما يجب تقديم العذر الى لجنة الاعذار في مدة لا تتجاوز موعد حضور المحاضرة التالية.)\n\nو بالتالي فإن اعذار الغياب لا تقدم لمدرس المقرر و لن ينظر فيها مدرس المقرر بل تقدم للجنة (لا تقدم أي اعذار غياب لي أنا قدمها بالطريقة التالية) :\n\nعلى الطالب الدخول من خلال حاسبه الرسمي للجامعة في مايكروسوفت اوفيس من خلال الرابط:\n\nhttps://login.microsoftonline.com/\n\nاو من خلال مسح رمز الاستجابة السريع التالي:\n\nQR.jpeg\n\nنموذج التقديم على الاعتذار\n\n- يتم الدخول للطلاب في الاوفيس باستخدام الرقم الجامعي للطالب كالتالي:\n\n- Student ID no.@st.ut.edu.sa\n\n- وإدخال كلمة مرور الخاصة بدخول الطالب على البلاك بورد وشبكة الجامعة.\n\n- الدخول لتقديم الاعذار يتم من خلال الرابط:\nhttps://forms.office.com/r/Udx8VWVu60\n\nملاحظة:\n\n- إذا كان العذر إجازة مرضية يجب تحميلها بصيغة pdf .\n\n- كل المعلومات ضرورية ويجب إدخالها كاملة في نموذج تقديم الاعذار.\n\n- يتم الرد من خلال ايميل الطالب المكتوب في الطلب خلال ثلاثة أيام دوام من تاريخ تقديم الطالب كحد أقصى.\n\n- أي خطأ في البيانات المدخلة او نقص في البيانات المدخلة سوف يتم رفض الطلب من قبل النظام.\n\n- في حال عدم تمكنك من تقديم العذر حسب الطريقة الرسمية الموضحه هنا فضلا التواصل مع سعادة دكتور محمد نرمة خلال ساعاته المكتبية او من خلال البريد الإلكتروني.",
+      "course_slug": "608-csc",
+      "course_code": "608 CSC",
+      "course_short_name": "طرق بحث",
+      "course_full_name": "طرق بحث 608 CSC_شعبة(229)نظري",
+      "doctor": "د. محمد الوكيل",
+      "posted_iso": "2026-09-01T08:25:02Z",
+      "accent_index": 3,
+      "links": [
+        {
+          "title": "login.microsoftonline.com",
+          "url": "https://login.microsoftonline.com/"
+        },
+        {
+          "title": "External Link",
+          "url": "https://forms.office.com/r/Udx8VWVu60"
+        }
+      ],
+      "attachments": [
+        "QR.jpeg"
+      ]
+    },
+    {
+      "id": "3d508ed227f1",
+      "title": "محتوى المقرر و التوصيف و التعليمات",
+      "body": "السلام عليكم و رحمة الله و بركاته\n\nتم رفع محتوى المقرر و توصيف على البلاك بورد بالاضافة إلى تعليمات هامة جدا بخصوص المقرر، و آمل من الجميع قراءة التعليمات بشكل كامل و بحرص بحيث يكون الجميع على دراية بالالية التي سنتبعها في هذا المقرر، و يمكن لكم تحميل المحتوى كاملا بالاضافة للتعليمات من صفحة المقرر على نظام البلاك بورد.",
+      "course_slug": "608-csc",
+      "course_code": "608 CSC",
+      "course_short_name": "طرق بحث",
+      "course_full_name": "طرق بحث 608 CSC_شعبة(229)نظري",
+      "doctor": "د. محمد الوكيل",
+      "posted_iso": "2026-08-23T16:45:41Z",
+      "accent_index": 3,
+      "links": [],
+      "attachments": []
+    }
+  ]
+}

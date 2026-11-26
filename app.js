@@ -7,8 +7,6 @@
   const MIN_MS = 60 * 1000;
   const PAST_DUE_WINDOW_MS = 5 * DAY_MS;
   const WEEK_MS = 7 * DAY_MS;
-  const ANN_PREVIEW_CHAR_LIMIT = 260;
-  const ANN_PREVIEW_LINE_LIMIT = 5;
 
   const state = {
     activeView: 'deadlines', // 'deadlines' | 'announcements'
@@ -24,7 +22,8 @@
     selectedCourse: null, // null = All Courses
     showPastDue: true,
     searchQuery: '',
-    expandedAnnouncements: new Set(),
+    openAnnouncementId: null,
+    lastFocusedCard: null,
   };
 
   const els = {
@@ -73,6 +72,18 @@
     emptyDesc: document.getElementById('empty-desc'),
     btnResetFilters: document.getElementById('btn-reset-filters'),
     footerSyncMeta: document.getElementById('footer-sync-meta'),
+    annModal: document.getElementById('ann-modal'),
+    annModalDialog: document.getElementById('ann-modal-dialog'),
+    annModalCode: document.getElementById('ann-modal-code'),
+    annModalCourse: document.getElementById('ann-modal-course'),
+    annModalAge: document.getElementById('ann-modal-age'),
+    btnCloseModal: document.getElementById('btn-close-modal'),
+    annModalTitle: document.getElementById('ann-modal-title'),
+    annModalBodyWell: document.getElementById('ann-modal-body-well'),
+    annModalBody: document.getElementById('ann-modal-body'),
+    annModalExtras: document.getElementById('ann-modal-extras'),
+    annModalDoctor: document.getElementById('ann-modal-doctor'),
+    annModalDate: document.getElementById('ann-modal-date'),
   };
 
   function escapeHtml(value) {
@@ -523,19 +534,7 @@
     `;
   }
 
-  function isLongAnnouncementBody(body) {
-    if (!body) return false;
-    return body.length > ANN_PREVIEW_CHAR_LIMIT || body.split('\n').length > ANN_PREVIEW_LINE_LIMIT;
-  }
-
-  function renderAnnouncementCardHtml(item, staggerIndex) {
-    const accentClass = `accent-${item.accent_index % 6}`;
-    const isLong = isLongAnnouncementBody(item.body);
-    const isExpanded = state.expandedAnnouncements.has(item.id);
-    const clampClass = isLong && !isExpanded ? ' is-clamped' : '';
-    const shortAge = Number.isFinite(item.postedMs) ? formatShortAstDate(item.postedMs) : 'Posted';
-    const fullDate = Number.isFinite(item.postedMs) ? formatAstTimestamp(item.postedMs) : '';
-
+  function buildAnnouncementExtrasHtml(item) {
     const linkChips = (item.links || [])
       .filter((lnk) => lnk && isSafeHttpUrl(lnk.url))
       .map(
@@ -571,24 +570,20 @@
       )
       .join('');
 
-    const extrasHtml =
-      linkChips || attBadges
-        ? `<div class="announcement-extras">${linkChips}${attBadges}</div>`
-        : '';
+    return `${linkChips}${attBadges}`;
+  }
+
+  function renderAnnouncementCardHtml(item, staggerIndex) {
+    const accentClass = `accent-${item.accent_index % 6}`;
+    const shortAge = Number.isFinite(item.postedMs) ? formatShortAstDate(item.postedMs) : 'Posted';
+    const fullDate = Number.isFinite(item.postedMs) ? formatAstTimestamp(item.postedMs) : '';
+    const extrasInner = buildAnnouncementExtrasHtml(item);
+    const extrasHtml = extrasInner ? `<div class="announcement-extras">${extrasInner}</div>` : '';
 
     const bodyHtml = item.body
       ? `
-        <div class="announcement-body-wrap">
-          <div class="announcement-body-well">
-            <p class="announcement-body-text${clampClass}" dir="auto">${escapeHtml(item.body)}</p>
-          </div>
-          ${
-            isLong
-              ? `<button type="button" class="squishy-btn btn-expand-ann" data-ann-id="${escapeHtml(item.id)}" aria-expanded="${isExpanded}">
-                  ${isExpanded ? 'Show less' : 'Read more'}
-                </button>`
-              : ''
-          }
+        <div class="announcement-body-well">
+          <p class="announcement-body-text" dir="auto">${escapeHtml(item.body)}</p>
         </div>
       `
       : '';
@@ -598,6 +593,9 @@
         class="announcement-card ${accentClass}"
         style="--stagger: ${Math.min(staggerIndex, 10)}"
         data-announcement-id="${escapeHtml(item.id)}"
+        tabindex="0"
+        role="button"
+        aria-label="Open announcement: ${escapeHtml(item.title)}"
       >
         <div class="card-top-row">
           <div class="course-tag">
@@ -621,6 +619,71 @@
         </div>
       </article>
     `;
+  }
+
+  function measureTruncatedAnnouncements() {
+    const wells = els.announcementsGrid.querySelectorAll('.announcement-body-well');
+    for (const well of wells) {
+      well.classList.remove('is-truncated');
+      if (well.scrollHeight > well.clientHeight + 2) {
+        well.classList.add('is-truncated');
+      }
+    }
+  }
+
+  function openAnnouncementModal(annId, triggerCard = null) {
+    const item = state.announcements.find((a) => a.id === annId);
+    if (!item) return;
+
+    state.openAnnouncementId = annId;
+    state.lastFocusedCard = triggerCard;
+
+    const accentClass = `accent-${item.accent_index % 6}`;
+    els.annModalDialog.className = `ann-modal-dialog ${accentClass}`;
+    els.annModalCode.textContent = item.course_code;
+    els.annModalCourse.textContent = item.course_short_name;
+
+    const shortAge = Number.isFinite(item.postedMs) ? formatShortAstDate(item.postedMs) : 'Posted';
+    const fullDate = Number.isFinite(item.postedMs) ? formatAstTimestamp(item.postedMs) : '';
+    els.annModalAge.textContent = shortAge;
+    els.annModalAge.title = fullDate;
+    els.annModalTitle.textContent = item.title;
+
+    if (item.body) {
+      els.annModalBodyWell.classList.remove('is-hidden');
+      els.annModalBody.textContent = item.body;
+      els.annModalBodyWell.scrollTop = 0;
+    } else {
+      els.annModalBodyWell.classList.add('is-hidden');
+      els.annModalBody.textContent = '';
+    }
+
+    const extrasInner = buildAnnouncementExtrasHtml(item);
+    if (extrasInner) {
+      els.annModalExtras.innerHTML = extrasInner;
+      els.annModalExtras.classList.remove('is-hidden');
+    } else {
+      els.annModalExtras.innerHTML = '';
+      els.annModalExtras.classList.add('is-hidden');
+    }
+
+    els.annModalDoctor.textContent = item.doctor || 'Course Lecturer';
+    els.annModalDate.textContent = fullDate;
+
+    els.annModal.classList.remove('is-hidden');
+    document.body.classList.add('modal-open');
+    els.btnCloseModal.focus();
+  }
+
+  function closeAnnouncementModal() {
+    if (!state.openAnnouncementId) return;
+    state.openAnnouncementId = null;
+    els.annModal.classList.add('is-hidden');
+    document.body.classList.remove('modal-open');
+    if (state.lastFocusedCard && document.contains(state.lastFocusedCard)) {
+      state.lastFocusedCard.focus();
+    }
+    state.lastFocusedCard = null;
   }
 
   function renderDeadlinesView() {
@@ -752,6 +815,7 @@
         .map((item, idx) => renderAnnouncementCardHtml(item, idx))
         .join('');
       els.emptyState.classList.add('is-hidden');
+      measureTruncatedAnnouncements();
     } else {
       els.announcementsSection.classList.add('is-hidden');
       els.announcementsGrid.innerHTML = '';
@@ -1047,25 +1111,45 @@
       renderAll();
     });
 
-    // Announcement Read more / Show less toggle (delegated)
+    // Clicking an announcement card opens it in the foreground modal
     els.announcementsGrid.addEventListener('click', (e) => {
-      const btn = e.target.closest('.btn-expand-ann');
-      if (!btn) return;
-      const annId = btn.dataset.annId;
-      if (!annId) return;
-      const card = btn.closest('.announcement-card');
-      const textEl = card ? card.querySelector('.announcement-body-text') : null;
-      if (state.expandedAnnouncements.has(annId)) {
-        state.expandedAnnouncements.delete(annId);
-        if (textEl) textEl.classList.add('is-clamped');
-        btn.textContent = 'Read more';
-        btn.setAttribute('aria-expanded', 'false');
-      } else {
-        state.expandedAnnouncements.add(annId);
-        if (textEl) textEl.classList.remove('is-clamped');
-        btn.textContent = 'Show less';
-        btn.setAttribute('aria-expanded', 'true');
+      if (e.target.closest('a')) return;
+      const card = e.target.closest('.announcement-card');
+      if (!card) return;
+      openAnnouncementModal(card.dataset.announcementId, card);
+    });
+
+    els.announcementsGrid.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      if (e.target.closest('a')) return;
+      const card = e.target.closest('.announcement-card');
+      if (!card) return;
+      e.preventDefault();
+      openAnnouncementModal(card.dataset.announcementId, card);
+    });
+
+    els.btnCloseModal.addEventListener('click', () => {
+      closeAnnouncementModal();
+    });
+
+    els.annModal.addEventListener('click', (e) => {
+      if (e.target === els.annModal) {
+        closeAnnouncementModal();
       }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && state.openAnnouncementId) {
+        e.preventDefault();
+        closeAnnouncementModal();
+      }
+    });
+
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+      if (state.activeView !== 'announcements') return;
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(measureTruncatedAnnouncements, 120);
     });
 
     // Lightweight pointer-tracking specular sheen

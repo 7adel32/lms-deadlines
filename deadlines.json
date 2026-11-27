@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-25T07:56:59Z",
+  "generated_at": "2026-11-27T21:00:31Z",
   "past_due_retention_days": 5,
   "courses": [
     {
@@ -41,17 +41,6 @@
     }
   ],
   "deadlines": [
-    {
-      "id": "fe166a55e312",
-      "title": "Project",
-      "course_slug": "605-csc",
-      "course_code": "605 CSC",
-      "course_short_name": "البرمجة المتقدمة وإطارات برمجة",
-      "course_full_name": "البرمجة المتقدمة وإطارات برمجة 605 CSC_شعبة(228)نظري",
-      "doctor": "د. أحمد مباركي",
-      "due_iso": "2026-11-22T20:59:00Z",
-      "accent_index": 2
-    },
     {
       "id": "7526872552cd",
       "title": "Paper 4 (30 Points)",
